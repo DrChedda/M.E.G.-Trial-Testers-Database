@@ -1,0 +1,103 @@
+---
+permalink: /main
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M.E.G. Trial Testers Database</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ '/styles.css' | relative_url }}">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="{{ '/scripts.js' | relative_url }}"></script>
+    <style>
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 15px;
+            padding: 10px 20px;
+        }
+        .nav-logo {
+            height: 45px;
+            width: auto;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body data-theme="light">
+
+<div class="top-nav">
+    <button class="theme-toggle" onclick="toggleTheme()">Theme</button>
+    <button class="theme-toggle" onclick="openAdmin()">Manage</button>
+    <img src="{{ '/TTLogo2.png' | relative_url }}" alt="M.E.G. Logo" class="nav-logo">
+</div>
+
+<div id="adminModal" class="viewer-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:var(--overlay); z-index:3000; justify-content:center; align-items:center;">
+    <div class="modal-content" style="max-width:500px; height:auto; padding:20px;">
+        <div class="modal-header">
+            <span style="font-weight: 500;">Administrative Control</span>
+            <button class="close-btn" onclick="closeAdmin()">X</button>
+        </div>
+        
+        <form id="adminForm" style="display:flex; flex-direction:column; gap:10px; margin-top:20px;">
+            <div style="font-size: 14px; font-weight: 500; color: var(--text-dim);">Add New Entry</div>
+            <input type="text" id="newTitle" placeholder="Document Title" required>
+            <input type="text" id="newDesc" placeholder="Description">
+            <input type="text" id="newUrl" placeholder="Google Link (URL)" required>
+            <select id="newCategory">
+                <option value="General">General</option>
+                <option value="Research">Research</option>
+            </select>
+            <select id="newType">
+                <option value="doc">Doc</option>
+                <option value="sheet">Sheet</option>
+                <option value="slide">Slide</option>
+            </select>
+            <select id="newAccess">
+                <option value="Public">Public (No Password)</option>
+                <option value="AC-1">AC-1 (FW+)</option>
+                <option value="AC-V">AC-V (NCO+)</option>
+                <option value="AC-X">AC-X (MIDCOM+)</option>
+            </select>
+            <button type="button" class="theme-toggle" style="background:var(--accent-purple); color:white; margin-bottom: 10px;" onclick="submitDocument()">Upload to Database</button>
+        </form>
+
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--border);">
+
+        <div style="font-size: 14px; font-weight: 500; color: var(--text-dim); margin-bottom: 10px;">Database Records (Delete)</div>
+        <div id="adminDocList" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 5px;">
+            </div>
+    </div>
+</div>
+
+<div id="viewerModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span id="modalTitle" style="font-weight: 500;">Document Viewer</span>
+            <button class="close-btn" onclick="closeViewer()">Close</button>
+        </div>
+        <iframe id="docIframe" src=""></iframe>
+    </div>
+</div>
+
+<div class="hero" id="hero">
+    <div class="logo">M.E.G. <span>Trial Tester</span> Document Database</div>
+    <div class="search-wrapper" id="searchWrapper">
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterCategory('All')">All</button>
+            <button class="filter-btn" onclick="filterCategory('General')">General Documents</button>
+            <button class="filter-btn" onclick="filterCategory('Research')">Research Papers</button>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search database..." onkeyup="searchDocs()">
+        </div>
+    </div>
+</div>
+
+<main class="results-container" id="results"></main>
+
+</body>
+</html>
