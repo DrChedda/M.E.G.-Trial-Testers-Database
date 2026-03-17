@@ -91,6 +91,34 @@
     </div>
 </div>
 
+<div id="passcodePromptModal">
+    <div class="modal-content">
+        <div class="modal-header" style="margin: -24px -24px 20px -24px; border-radius: 8px 8px 0 0;">
+            <span style="font-weight: 500;">Security Clearance</span>
+            <button class="close-btn" onclick="cancelPasscode()">X</button>
+        </div>
+        <h3 style="margin: 0 0 10px 0; color: var(--text-main);">Access Restricted</h3>
+        <p id="passcodeReqLevel" style="color: var(--text-dim); font-size: 14px; margin-bottom: 20px;">
+            Please enter the required authorization code.
+        </p>
+        <input type="password" id="passcodeInput" placeholder="Enter Access Code">
+        <div class="passcode-btns">
+            <button class="btn-cancel" onclick="cancelPasscode()">Cancel</button>
+            <button class="btn-submit" onclick="submitPasscode()">Verify</button>
+            <button class="btn-help" onclick="togglePasscodeHelp()">?</button>
+        </div>
+        <div id="passcodeHelpText" style="display: none;">
+            <strong style="color: var(--text-main);">Rank Explanations:</strong>
+            <ul style="margin: 8px 0 0 18px; padding: 0; color: var(--text-dim);">
+                <li><strong>Public:</strong> No clearance required.</li>
+                <li><strong>AC-1:</strong> Fieldworker and above.</li>
+                <li><strong>AC-V:</strong> NCO (Trial Lead) and above.</li>
+                <li><strong>AC-X:</strong> MIDCOM (Research Secretary) and above.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
 <div class="hero" id="hero">
     <div class="logo">M.E.G. <span>Trial Tester</span> Document Database</div>
     <div class="search-wrapper" id="searchWrapper">

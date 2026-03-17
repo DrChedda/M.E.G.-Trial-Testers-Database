@@ -392,3 +392,102 @@ hr {
     justify-content: center;
     border-radius: 8px;
 }
+
+.search-wrapper.sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2500;
+    background: var(--nav-bg);
+    padding: 12px 0;
+    border-bottom: 1px solid var(--search-border);
+    display: flex;
+    justify-content: center;
+    box-shadow: var(--shadow);
+}
+
+#passcodePromptModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--overlay);
+    z-index: 4000;
+    justify-content: center;
+    align-items: center;
+}
+
+#passcodePromptModal .modal-content {
+    max-width: 400px;
+    width: 90%;
+    height: auto;
+    padding: 24px;
+    text-align: center;
+    border-radius: var(--radius);
+    background: var(--bg-color);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+#passcodeInput {
+    box-sizing: border-box;
+    width: 100%;
+    background: var(--search-bg);
+    border: 1px solid var(--search-border);
+    border-radius: var(--radius);
+    padding: 12px;
+    color: var(--text-main);
+    font-size: 16px;
+    margin: 20px 0;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+#passcodeInput:focus {
+    border-color: var(--accent-purple);
+}
+
+.passcode-btns {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.passcode-btns button {
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--search-border);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.btn-submit {
+    background: var(--accent-purple);
+    color: white;
+    border: none !important;
+}
+
+.btn-cancel {
+    background: var(--search-bg);
+    color: var(--text-main);
+}
+
+.btn-help {
+    background: transparent;
+    color: var(--text-dim);
+    width: 38px;
+}
+
+#passcodeHelpText {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border);
+    text-align: left;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+}
