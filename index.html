@@ -34,10 +34,28 @@ permalink: /main
 </head>
 <body data-theme="light">
 
-<div class="top-nav">
-    <button class="theme-toggle" onclick="toggleTheme()">Theme</button>
-    <button class="theme-toggle" onclick="openAdmin()">Manage</button>
-    <img src="favicon.png" alt="M.E.G. Logo" class="nav-logo">
+<div class="hero" id="hero">
+    <div class="logo">M.E.G. <span>Trial Tester</span> Document Database</div>
+    
+    <div class="search-wrapper" id="searchWrapper">
+        <div class="sticky-nav-content">
+            <img src="favicon.png" alt="M.E.G. Logo" class="nav-logo">
+            <div class="nav-btns">
+                <button class="theme-toggle" onclick="toggleTheme()">Theme</button>
+                <button class="theme-toggle" onclick="openAdmin()">Manage</button>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterCategory('All')">All</button>
+            <button class="filter-btn" onclick="filterCategory('General')">General Documents</button>
+            <button class="filter-btn" onclick="filterCategory('Research')">Research Papers</button>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search database..." onkeyup="searchDocs()">
+        </div>
+    </div>
 </div>
 
 <div id="adminModal" class="viewer-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:var(--overlay); z-index:3000; justify-content:center; align-items:center;">
@@ -118,21 +136,6 @@ permalink: /main
                 <li><strong>AC-V:</strong> NCO (Trial Lead) and above.</li>
                 <li><strong>AC-X:</strong> MIDCOM (Research Secretary) and above.</li>
             </ul>
-        </div>
-    </div>
-</div>
-
-<div class="hero" id="hero">
-    <div class="logo">M.E.G. <span>Trial Tester</span> Document Database</div>
-    <div class="search-wrapper" id="searchWrapper">
-        <div class="filter-bar">
-            <button class="filter-btn active" onclick="filterCategory('All')">All</button>
-            <button class="filter-btn" onclick="filterCategory('General')">General Documents</button>
-            <button class="filter-btn" onclick="filterCategory('Research')">Research Papers</button>
-        </div>
-
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search database..." onkeyup="searchDocs()">
         </div>
     </div>
 </div>

@@ -437,3 +437,40 @@ hr {
     font-size: 13px;
     line-height: 1.5
 }
+
+.sticky-nav-content {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+    max-width: 800px;
+    margin-bottom: 10px;
+}
+
+.nav-btns { display: flex; gap: 10px; }
+
+.search-wrapper.sticky {
+    flex-direction: column;
+    padding: 10px 0;
+}
+
+body.modal-open .search-wrapper.sticky {
+    display: none !important;
+}
+
+.search-wrapper.sticky .sticky-nav-content {
+    display: flex;
+}
+
+.search-wrapper.sticky .nav-logo {
+    height: 30px;
+}
+
+.top-nav {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}

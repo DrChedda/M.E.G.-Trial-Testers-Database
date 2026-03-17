@@ -60,6 +60,7 @@ function requestAccessCode(clearanceLevel, savedPass) {
         document.getElementById('passcodeInput').value = savedPass || '';
         document.getElementById('passcodeHelpText').style.display = 'none';
         document.getElementById('passcodePromptModal').style.display = 'flex';
+        document.body.classList.add('modal-open');
         
         passcodePromiseResolve = resolve;
     });
@@ -68,11 +69,13 @@ function requestAccessCode(clearanceLevel, savedPass) {
 function submitPasscode() {
     const code = document.getElementById('passcodeInput').value;
     document.getElementById('passcodePromptModal').style.display = 'none';
+    document.body.classList.remove('modal-open');
     if (passcodePromiseResolve) passcodePromiseResolve(code);
 }
 
 function cancelPasscode() {
     document.getElementById('passcodePromptModal').style.display = 'none';
+    document.body.classList.remove('modal-open');
     if (passcodePromiseResolve) passcodePromiseResolve(null);
 }
 
@@ -142,6 +145,7 @@ async function openViewer(id, title) {
         document.getElementById('modalTitle').innerText = title;
         document.getElementById('docIframe').src = securedUrl.includes('docs.google.com') ? securedUrl.split('/edit')[0] + '/preview' : securedUrl;
         modal.style.display = 'flex';
+        document.body.classList.add('modal-open');
         document.body.style.overflow = 'hidden';
     }
 }
@@ -149,6 +153,7 @@ async function openViewer(id, title) {
 function closeViewer() {
     document.getElementById('viewerModal').style.display = 'none';
     document.getElementById('docIframe').src = '';
+    document.body.classList.remove('modal-open');
     document.body.style.overflow = 'auto';
 }
 
@@ -164,10 +169,12 @@ async function openAdmin() {
     localStorage.setItem('admin_passcode', passcode);
     window.adminKey = passcode;
     document.getElementById('adminModal').style.display = 'flex';
+    document.body.classList.add('modal-open');
 }
 
 function closeAdmin() {
     document.getElementById('adminModal').style.display = 'none';
+    document.body.classList.remove('modal-open');
     resetAdminForm();
 }
 
@@ -281,8 +288,12 @@ function toggleTheme() {
 }
 
 window.onscroll = () => {
-    const hero = document.getElementById('hero'), sw = document.getElementById('searchWrapper');
-    if (hero && sw) sw.classList.toggle("sticky", window.pageYOffset > (hero.offsetHeight - 80));
+    const hero = document.getElementById('hero');
+    const sw = document.getElementById('searchWrapper');
+    if (hero && sw) {
+        const isSticky = window.pageYOffset > (hero.offsetHeight - 60);
+        sw.classList.toggle("sticky", isSticky);
+    }
 };
 
 document.addEventListener('DOMContentLoaded', init);
