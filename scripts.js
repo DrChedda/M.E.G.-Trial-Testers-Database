@@ -141,11 +141,73 @@ function renderAdminList() {
     if (!listArea) return;
     
     listArea.innerHTML = documents.map(doc => `
-        <div class="admin-item">
+        <div class="admin-item" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
             <span class="admin-item-title">${doc.title}</span>
-            <button class="delete-btn" onclick="deleteDocument('${doc.id}')">Delete</button>
+            <div class="admin-btns">
+                <button class="edit-btn" onclick="populateEditForm('${doc.id}')" style="background:var(--accent-blue); color:white; border:none; padding:2px 8px; cursor:pointer; margin-right:5px;">Edit</button>
+                <button class="delete-btn" onclick="deleteDocument('${doc.id}')">Delete</button>
+            </div>
         </div>
     `).join('');
+}
+
+let editingDocId = null;
+
+function populateEditForm(id) {
+    const doc = documents.find(d => d.id === id);
+    if (!doc) return;
+
+    editingDocId = id;
+    
+    document.getElementById('newTitle').value = doc.title;
+    document.getElementById('newDesc').value = doc.description || '';
+    document.getElementById('newUrl').value = doc.url || '';
+    document.getElementById('newCategory').value = doc.category;
+    document.getElementById('newType').value = doc.type;
+    document.getElementById('newAccess').value = doc.access_required;
+
+    const submitBtn = document.querySelector("button[onclick='submitDocument()']");
+    submitBtn.innerText = "Save Changes";
+    submitBtn.setAttribute("onclick", "updateDocument()");
+}
+
+async function updateDocument() {
+    const adminPasscode = window.adminKey;
+    if (!editingDocId) return;
+
+    const accessValue = document.getElementById('newAccess').value;
+    const isProtected = accessValue !== "Public";
+
+    const { data: success, error } = await _supabase.rpc('secure_update_document', {
+        admin_code: adminPasscode,
+        doc_id: editingDocId,
+        new_title: document.getElementById('newTitle').value,
+        new_desc: document.getElementById('newDesc').value,
+        new_url: document.getElementById('newUrl').value,
+        new_cat: document.getElementById('newCategory').value,
+        new_type: document.getElementById('newType').value,
+        new_access: accessValue,
+        new_protected: isProtected
+    });
+
+    if (error || !success) {
+        alert("Update Error: " + (error?.message || "Unauthorized"));
+    } else {
+        alert("Document updated!");
+        resetAdminForm();
+        await fetchDocuments();
+        renderAdminList();
+    }
+}
+
+function resetAdminForm() {
+    editingDocId = null;
+    document.getElementById('adminForm').reset();
+    const submitBtn = document.querySelector("button[onclick='updateDocument()']");
+    if(submitBtn) {
+        submitBtn.innerText = "Upload to Database";
+        submitBtn.setAttribute("onclick", "submitDocument()");
+    }
 }
 
 async function submitDocument() {
