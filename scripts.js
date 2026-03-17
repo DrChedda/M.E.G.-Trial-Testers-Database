@@ -4,6 +4,9 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let documents = [];
 let currentCategory = 'All';
+let currentPage = 1;
+const itemsPerPage = 10;
+let editingDocId = null;
 
 async function init() {
     initTheme();
@@ -23,22 +26,9 @@ async function fetchDocuments() {
     searchDocs();
 }
 
-function filterCategory(cat) {
-    currentCategory = cat;
-    const buttons = document.querySelectorAll('.filter-btn');
-    buttons.forEach(btn => {
-        btn.classList.toggle('active', btn.innerText.includes(cat));
-    });
-    searchDocs();
-}
-
-let currentPage = 1;
-const itemsPerPage = 10;
-
 function searchDocs() {
     const query = document.getElementById('searchInput').value.toLowerCase();
     const resultsArea = document.getElementById('results');
-    
     if (!resultsArea) return;
 
     const filtered = documents.filter(doc => {
@@ -58,7 +48,7 @@ function searchDocs() {
     resultsArea.innerHTML = paginatedItems.map(doc => {
         const tagClass = 'tag-' + doc.type;
         return `
-            <div class="result-item" onclick="openViewer('${doc.id}', '${doc.title}')">
+            <div class="result-item" onclick="handleDocClick(event, '${doc.id}', '${doc.title}')">
                 <div class="result-header">
                     <span class="tag ${tagClass}">${doc.type}</span>
                     <span class="category-text">${doc.category}</span>
@@ -71,6 +61,17 @@ function searchDocs() {
     }).join('');
 
     renderPagination(totalPages);
+}
+
+function handleDocClick(event, id, title) {
+    if (event.ctrlKey || event.metaKey) {
+        event.stopPropagation();
+        navigator.clipboard.writeText(id).then(() => {
+            alert(`UUID Copied: ${id}`);
+        });
+    } else {
+        openViewer(id, title);
+    }
 }
 
 function renderPagination(totalPages) {
@@ -115,25 +116,20 @@ async function openViewer(id, title) {
         const userCode = prompt(`Clearance Required: ${doc.access_required}\nEnter Access Code:`);
         if (!userCode) return;
 
-        console.log(`Attempting RPC for ${id} with code: ${userCode}`);
-
         const { data, error } = await _supabase.rpc('get_secure_url', { 
             doc_id: id, 
-            user_code: String(userCode).trim() 
+            passcode: String(userCode).trim() 
         });
         
         if (error) {
-            console.error("RPC Database Error:", error.message, error.hint);
             alert(`ACCESS ERROR: ${error.message}`);
             return;
         }
 
         if (!data) {
-            console.warn("RPC returned null. Check if passcode matches the Level in access_codes table.");
             alert("ACCESS DENIED: Invalid Clearance Level or Code.");
             return;
         }
-        
         securedUrl = data;
     }
 
@@ -162,7 +158,7 @@ async function openAdmin() {
     const passcode = prompt("Enter AC-X Passcode:");
     if (!passcode) return;
 
-    const { data: isAdmin, error } = await _supabase.rpc('verify_admin', { user_code: passcode });
+    const { data: isAdmin, error } = await _supabase.rpc('verify_admin', { passcode: passcode });
     
     if (error || !isAdmin) {
         alert("Invalid Credentials.");
@@ -176,7 +172,7 @@ async function openAdmin() {
 
 function closeAdmin() {
     document.getElementById('adminModal').style.display = 'none';
-    document.getElementById('adminForm').reset();
+    resetAdminForm();
 }
 
 function renderAdminList() {
@@ -184,8 +180,11 @@ function renderAdminList() {
     if (!listArea) return;
     
     listArea.innerHTML = documents.map(doc => `
-        <div class="admin-item">
-            <span class="admin-item-title">${doc.title}</span>
+        <div class="admin-item" title="ID: ${doc.id}">
+            <div style="display:flex; flex-direction:column; max-width:60%;">
+                <span class="admin-item-title">${doc.title}</span>
+                <span style="font-size:10px; color:var(--text-dim); font-family:monospace;">${doc.id.substring(0,8)}...</span>
+            </div>
             <div class="admin-btns">
                 <button class="edit-btn" onclick="populateEditForm('${doc.id}')">Edit</button>
                 <button class="delete-btn" onclick="deleteDocument('${doc.id}')">Delete</button>
@@ -194,14 +193,11 @@ function renderAdminList() {
     `).join('');
 }
 
-let editingDocId = null;
-
 function populateEditForm(id) {
     const doc = documents.find(d => d.id === id);
     if (!doc) return;
 
     editingDocId = id;
-    
     document.getElementById('newTitle').value = doc.title;
     document.getElementById('newDesc').value = doc.description || '';
     document.getElementById('newUrl').value = doc.url || '';
@@ -210,36 +206,31 @@ function populateEditForm(id) {
     document.getElementById('newAccess').value = doc.access_required;
 
     const submitBtn = document.querySelector("button[onclick='submitDocument()']");
-    submitBtn.innerText = "Save Changes";
-    submitBtn.setAttribute("onclick", "updateDocument()");
+    if (submitBtn) {
+        submitBtn.innerText = "Save Changes";
+        submitBtn.setAttribute("onclick", "updateDocument()");
+    }
 }
 
 async function updateDocument() {
-    const adminPasscode = window.adminKey;
     if (!editingDocId) return;
-
     const accessValue = document.getElementById('newAccess').value;
-    const isProtected = accessValue !== "Public";
-
     const { data: success, error } = await _supabase.rpc('secure_update_document', {
         doc_id: editingDocId,
         new_access: accessValue,
         new_cat: document.getElementById('newCategory').value,
         new_desc: document.getElementById('newDesc').value,
-        new_protected: isProtected,
+        new_protected: accessValue !== "Public",
         new_title: document.getElementById('newTitle').value,
         new_type: document.getElementById('newType').value,
         new_url: document.getElementById('newUrl').value,
-        passcode: adminPasscode 
+        passcode: window.adminKey 
     });
 
-    if (error) {
-        console.error("Update Error Details:", error);
-        alert("Update Error: " + error.message);
-    } else if (!success) {
-        alert("Unauthorized: Incorrect Passcode.");
+    if (error || !success) {
+        alert("Update Error: " + (error?.message || "Unauthorized"));
     } else {
-        alert("Document updated successfully!");
+        alert("Document updated!");
         resetAdminForm();
         await fetchDocuments();
         renderAdminList();
@@ -257,27 +248,22 @@ function resetAdminForm() {
 }
 
 async function submitDocument() {
-    const adminPasscode = window.adminKey;
-    if (!adminPasscode) return alert("Session expired.");
-
     const accessValue = document.getElementById('newAccess').value;
-    const isProtected = accessValue !== "Public";
-
     const { data: success, error } = await _supabase.rpc('secure_add_document', {
-        admin_code: adminPasscode,
+        passcode: window.adminKey,
         new_title: document.getElementById('newTitle').value,
         new_desc: document.getElementById('newDesc').value,
         new_url: document.getElementById('newUrl').value,
         new_cat: document.getElementById('newCategory').value,
         new_type: document.getElementById('newType').value,
         new_access: accessValue,
-        new_protected: isProtected
+        new_protected: accessValue !== "Public"
     });
 
     if (error || !success) {
         alert("Error: " + (error?.message || "Unauthorized"));
     } else {
-        alert("Document added successfully!");
+        alert("Document added!");
         document.getElementById('adminForm').reset();
         await fetchDocuments();
         renderAdminList();
@@ -285,15 +271,14 @@ async function submitDocument() {
 }
 
 async function deleteDocument(id) {
-    if (!confirm("Confirm permanent deletion?")) return;
-
+    if (!confirm(`Confirm deletion for UUID: ${id}`)) return;
     const { data: success, error } = await _supabase.rpc('secure_delete_document', { 
         doc_id: id, 
-        admin_code: window.adminKey 
+        passcode: window.adminKey 
     });
 
     if (error || !success) {
-        alert("Delete error: Unauthorized.");
+        alert("Delete error: " + (error?.message || "Unauthorized"));
     } else {
         await fetchDocuments();
         renderAdminList();
