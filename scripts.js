@@ -124,32 +124,44 @@ async function openViewer(id, title) {
     const doc = documents.find(d => d.id === id);
     if (!doc) return;
 
-    let securedUrl = doc.url; 
+    let securedUrl = null;
 
-    if (!securedUrl) {
-        const savedPass = localStorage.getItem(`pass_${doc.access_required}`) || localStorage.getItem('last_used_pass') || '';
-        const userCode = await requestAccessCode(doc.access_required, savedPass);
+    if (doc.access_required && doc.access_required !== 'Public') {=
+        let savedPass = localStorage.getItem('highest_access_pass') || 
+                        localStorage.getItem(`pass_${doc.access_required}`) || '';
+
+        let userCode = await requestAccessCode(doc.access_required, savedPass);
         if (!userCode) return;
 
-        const { data, error } = await _supabase.rpc('get_secure_url', { doc_id: id, provided_passcode: userCode.trim() });
+        const { data, error } = await _supabase.rpc('get_secure_url', { 
+            doc_id: id, 
+            provided_passcode: userCode.trim() 
+        });
         
-        if (error || !data) return alert(error ? `DATABASE ERROR: ${error.message}` : "ACCESS DENIED: Invalid Clearance Level or Code.");
+        if (error || !data) {
+            localStorage.removeItem('highest_access_pass');
+            return alert("ACCESS DENIED: Your clearance level is insufficient for this file.");
+        }
         
-        localStorage.setItem(`pass_${doc.access_required}`, userCode);
-        localStorage.setItem('last_used_pass', userCode);
+        localStorage.setItem('highest_access_pass', userCode.trim());
+        localStorage.setItem(`pass_${doc.access_required}`, userCode.trim());
         securedUrl = data;
+    } else {
+        securedUrl = doc.url;
     }
+
+    if (!securedUrl) return;
 
     const modal = document.getElementById('viewerModal');
     if (modal) {
         document.getElementById('modalTitle').innerText = title;
-        document.getElementById('docIframe').src = securedUrl.includes('docs.google.com') ? securedUrl.split('/edit')[0] + '/preview' : securedUrl;
+        document.getElementById('docIframe').src = securedUrl.includes('docs.google.com') 
+            ? securedUrl.split('/edit')[0] + '/preview' 
+            : securedUrl;
         modal.style.display = 'flex';
         document.body.classList.add('modal-open');
-        document.body.style.overflow = 'hidden';
     }
 }
-
 function closeViewer() {
     document.getElementById('viewerModal').style.display = 'none';
     document.getElementById('docIframe').src = '';
