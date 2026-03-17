@@ -1,6 +1,3 @@
----
-permalink: /main
----
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,14 +6,14 @@ permalink: /main
     <meta name="twitter:card" content="summary_large_image" />
     <meta property="og:title" content="M.E.G. Trial Tester Document Database" />
     <meta property="og:description" content="Database containing all Trial Tester documents and research papers." />
-    <meta property="og:image" content="{{ '/TTMetaimage.png' | relative_url }}" />
+    <meta property="og:image" content="/TTMetaimage.png" />
     <meta name="theme-color" content="#311f3a">
     <title>M.E.G. Trial Tester Document Database</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ '/styles.css' | relative_url }}">
-    <link rel="icon" type="image/png" href="{{ '/favicon.png' | relative_url }}">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="favicon.png">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="{{ '/scripts.js' | relative_url }}"></script>
+    <script src="scripts.js"></script>
     <style>
         .top-nav {
             display: flex;
@@ -37,7 +34,7 @@ permalink: /main
 <div class="top-nav">
     <button class="theme-toggle" onclick="toggleTheme()">Theme</button>
     <button class="theme-toggle" onclick="openAdmin()">Manage</button>
-    <img src="{{ '/favicon.png' | relative_url }}" alt="M.E.G. Logo" class="nav-logo">
+    <img src="favicon.png" alt="M.E.G. Logo" class="nav-logo">
 </div>
 
 <div id="adminModal" class="viewer-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:var(--overlay); z-index:3000; justify-content:center; align-items:center;">
