@@ -13,7 +13,7 @@
     --sheet-green: #0f9d58;
     --slide-yellow: #f4b400;
     --overlay: #00000080;
-    --border: #dfe1e5
+    --border: #dfe1e5;
 }
 
 [data-theme="dark"] {
@@ -26,7 +26,7 @@
     --link-color: #c58af9;
     --nav-bg: #202124fa;
     --overlay: #000c;
-    --border: #5f6368
+    --border: #5f6368;
 }
 
 body {
@@ -35,17 +35,11 @@ body {
     background-color: var(--bg-color);
     color: var(--text-main);
     font-family: 'Roboto', sans-serif;
-    transition: background-color .3s ease
+    transition: background-color .3s ease;
 }
 
 .top-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    padding: 15px;
-    z-index: 1001;
-    display: flex;
-    gap: 10px
+    display: none;
 }
 
 .theme-toggle, .filter-btn {
@@ -53,14 +47,14 @@ body {
     border: 1px solid var(--search-border);
     color: var(--text-main);
     cursor: pointer;
-    transition: all .2s
+    transition: all .2s;
 }
 
 .theme-toggle {
     padding: 8px 16px;
     border-radius: var(--radius);
     font-size: 13px;
-    font-weight: 500
+    font-weight: 500;
 }
 
 .hero {
@@ -69,25 +63,50 @@ body {
     align-items: center;
     justify-content: center;
     height: 50vh;
-    width: 100%
+    width: 100%;
 }
 
 .logo {
     font-family: 'Google Sans', sans-serif;
     font-size: 2.5rem;
     margin-bottom: 30px;
-    text-align: center
+    text-align: center;
 }
 
 .logo span {
     color: var(--accent-purple);
-    font-weight: 500
+    font-weight: 500;
 }
+
+/* --- NAV & SEARCH WRAPPER LOGIC --- */
 
 .search-wrapper {
     width: 90%;
     max-width: 584px;
-    z-index: 1000
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sticky-nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0 auto 20px auto;
+    transition: all 0.3s ease;
+}
+
+.nav-btns { 
+    display: flex; 
+    gap: 10px; 
+}
+
+.nav-logo {
+    height: 45px;
+    width: auto;
+    transition: height 0.3s ease;
 }
 
 .search-wrapper.sticky {
@@ -99,16 +118,29 @@ body {
     max-width: 100%;
     width: 100%;
     background: var(--nav-bg);
-    padding: 12px 0;
+    padding: 10px 0;
     border-bottom: 1px solid var(--search-border);
-    display: flex;
     justify-content: center;
     animation: slideDown .4s ease-out;
-    box-shadow: var(--shadow)
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.search-wrapper.sticky .sticky-nav-content {
+    max-width: 584px;
+    width: 90%;
+    margin-bottom: 8px;
+}
+
+.search-wrapper.sticky .nav-logo {
+    height: 30px;
 }
 
 .search-wrapper.sticky .filter-bar {
-    display: none
+    display: none;
+}
+
+body.modal-open .search-wrapper.sticky {
+    display: none !important;
 }
 
 @keyframes slideDown {
@@ -117,14 +149,14 @@ body {
 }
 
 .search-box {
-    width: 90%;
-    max-width: 584px;
+    width: 100%;
     background: var(--search-bg);
     border: 1px solid var(--search-border);
     border-radius: var(--radius);
     display: flex;
     align-items: center;
-    padding: 2px 20px
+    padding: 2px 20px;
+    box-sizing: border-box;
 }
 
 input[type="text"], input[type="url"], select, textarea {
@@ -134,14 +166,16 @@ input[type="text"], input[type="url"], select, textarea {
     font-size: 16px;
     height: 44px;
     width: 100%;
-    outline: none
+    outline: none;
 }
+
+/* --- ADMIN FORM --- */
 
 #adminForm {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-top: 20px
+    margin-top: 20px;
 }
 
 #adminForm input, #adminForm select {
@@ -154,19 +188,21 @@ input[type="text"], input[type="url"], select, textarea {
     color: var(--text-main);
     font-size: 14px;
     outline: none;
-    transition: border-color .2s
+    transition: border-color .2s;
 }
 
 #adminForm input:focus, #adminForm select:focus, #passcodeInput:focus {
-    border-color: var(--accent-purple)
+    border-color: var(--accent-purple);
 }
 
 #adminForm button {
     width: 100%;
     margin-top: 5px;
     padding: 12px;
-    font-weight: 500
+    font-weight: 500;
 }
+
+/* --- RESULTS & TAGS --- */
 
 .results-container {
     width: 95%;
@@ -174,7 +210,7 @@ input[type="text"], input[type="url"], select, textarea {
     margin: 20px auto 100px;
     padding: 20px;
     background: var(--bg-color);
-    border-radius: var(--radius)
+    border-radius: var(--radius);
 }
 
 .result-item {
@@ -182,24 +218,24 @@ input[type="text"], input[type="url"], select, textarea {
     padding: 15px;
     border-radius: var(--radius);
     cursor: pointer;
-    transition: background .2s
+    transition: background .2s;
 }
 
 .result-item:hover {
-    background: var(--search-bg)
+    background: var(--search-bg);
 }
 
 .result-header {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 4px
+    margin-bottom: 4px;
 }
 
 .result-item .title-link {
     color: var(--link-color);
     text-decoration: none;
-    font-size: 1.2rem
+    font-size: 1.2rem;
 }
 
 .tag {
@@ -208,25 +244,27 @@ input[type="text"], input[type="url"], select, textarea {
     text-transform: uppercase;
     padding: 2px 8px;
     border-radius: 4px;
-    color: #fff
+    color: #fff;
 }
 
-.tag-doc { background-color: var(--doc-blue) }
-.tag-sheet { background-color: var(--sheet-green) }
-.tag-slide { background-color: var(--slide-yellow) }
-.tag-other { background-color: var(--text-dim) }
+.tag-doc { background-color: var(--doc-blue); }
+.tag-sheet { background-color: var(--sheet-green); }
+.tag-slide { background-color: var(--slide-yellow); }
+.tag-other { background-color: var(--text-dim); }
 
 .result-desc, .clearance-tag, .category-text, #passcodeHelpText {
-    color: var(--text-dim)
+    color: var(--text-dim);
 }
 
-.result-desc { font-size: .95rem }
+.result-desc { font-size: .95rem; }
 
 .clearance-tag {
     font-size: 11px;
     margin-top: 8px;
-    opacity: .8
+    opacity: .8;
 }
+
+/* --- MODALS --- */
 
 #viewerModal, #adminModal, #passcodePromptModal {
     display: none;
@@ -237,11 +275,11 @@ input[type="text"], input[type="url"], select, textarea {
     height: 100%;
     background: var(--overlay);
     justify-content: center;
-    align-items: center
+    align-items: center;
 }
 
-#viewerModal { z-index: 2000 }
-#passcodePromptModal { z-index: 4000 }
+#viewerModal { z-index: 2000; }
+#passcodePromptModal { z-index: 4000; }
 
 .modal-content {
     width: 95vw;
@@ -253,21 +291,21 @@ input[type="text"], input[type="url"], select, textarea {
     flex-direction: column;
     box-shadow: 0 10px 50px #00000080;
     margin: auto;
-    overflow: hidden
+    overflow: hidden;
 }
 
 #adminModal .modal-content, #passcodePromptModal .modal-content {
     height: auto;
-    padding: 24px
+    padding: 24px;
 }
 
-#adminModal .modal-content { max-width: 500px; width: 90% }
+#adminModal .modal-content { max-width: 500px; width: 90%; }
 
 #passcodePromptModal .modal-content {
     max-width: 400px;
     width: 90%;
     text-align: center;
-    box-shadow: 0 10px 30px #0000004d
+    box-shadow: 0 10px 30px #0000004d;
 }
 
 .modal-header {
@@ -276,7 +314,7 @@ input[type="text"], input[type="url"], select, textarea {
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
-    align-items: center
+    align-items: center;
 }
 
 .close-btn {
@@ -287,45 +325,60 @@ input[type="text"], input[type="url"], select, textarea {
     border-radius: 4px;
     cursor: pointer;
     font-weight: 500;
-    transition: background .2s
+    transition: background .2s;
 }
 
-.close-btn:hover { background: #ffffff4d }
+.close-btn:hover { background: #ffffff4d; }
 
 #docIframe {
     flex-grow: 1;
     border: none;
     width: 100%;
     height: 100%;
-    display: block
+    display: block;
 }
+
+/* --- FILTERS & PAGINATION --- */
 
 .filter-bar, .pagination-controls, .passcode-btns {
     display: flex;
     gap: 10px;
-    justify-content: center
+    justify-content: center;
 }
 
-.filter-bar { margin-bottom: 20px }
+.filter-bar { margin-bottom: 20px; }
 
 .filter-btn {
     padding: 6px 14px;
     border-radius: 20px;
-    font-size: 13px
+    font-size: 13px;
 }
 
 .filter-btn.active, .btn-submit {
     background: var(--accent-purple);
     color: #fff;
-    border-color: var(--accent-purple)
+    border-color: var(--accent-purple);
 }
 
 .category-text {
     font-size: 12px;
     font-weight: 500;
     text-transform: uppercase;
-    margin-right: 5px
+    margin-right: 5px;
 }
+
+.pagination-controls { margin: 40px 0; gap: 8px; }
+
+.pagination-controls .filter-btn {
+    min-width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+/* --- MISC ADMIN UI --- */
 
 .admin-item {
     display: flex;
@@ -335,7 +388,7 @@ input[type="text"], input[type="url"], select, textarea {
     padding: 8px;
     border-radius: 4px;
     border: 1px solid var(--border);
-    margin-bottom: 5px
+    margin-bottom: 5px;
 }
 
 .admin-item-title {
@@ -344,7 +397,7 @@ input[type="text"], input[type="url"], select, textarea {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 70%;
-    color: var(--text-main)
+    color: var(--text-main);
 }
 
 .delete-btn, .edit-btn {
@@ -354,10 +407,10 @@ input[type="text"], input[type="url"], select, textarea {
     border-radius: 4px;
     cursor: pointer;
     font-size: 11px;
-    font-weight: 500
+    font-weight: 500;
 }
 
-.delete-btn { background: #ff4d4d }
+.delete-btn { background: #ff4d4d; }
 
 #adminDocList {
     max-height: 200px;
@@ -365,41 +418,32 @@ input[type="text"], input[type="url"], select, textarea {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding-right: 5px
+    padding-right: 5px;
 }
 
 hr {
     margin: 15px 0;
     border: 0;
-    border-top: 1px solid var(--border)
+    border-top: 1px solid var(--border);
 }
 
 .admin-btns {
     display: flex;
     gap: 6px;
-    align-items: center
+    align-items: center;
 }
 
 .edit-btn {
     background: var(--doc-blue);
-    transition: opacity .2s, transform .1s
+    transition: opacity .2s, transform .1s;
 }
 
-.edit-btn:hover { opacity: .9 }
-.edit-btn:active { transform: scale(.95) }
+.edit-btn:hover { opacity: .9; }
+.edit-btn:active { transform: scale(.95); }
 
-[data-theme="dark"] .edit-btn { background: #5c9aff }
+[data-theme="dark"] .edit-btn { background: #5c9aff; }
 
-.pagination-controls { margin: 40px 0; gap: 8px }
-
-.pagination-controls .filter-btn {
-    min-width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px
-}
+/* --- PASSCODE UI --- */
 
 #passcodeInput {
     box-sizing: border-box;
@@ -412,7 +456,7 @@ hr {
     font-size: 16px;
     margin: 20px 0;
     outline: none;
-    transition: border-color .2s
+    transition: border-color .2s;
 }
 
 .passcode-btns button {
@@ -422,12 +466,12 @@ hr {
     cursor: pointer;
     font-weight: 500;
     font-size: 14px;
-    transition: all .2s
+    transition: all .2s;
 }
 
-.btn-submit { border: none!important }
-.btn-cancel { background: var(--search-bg); color: var(--text-main) }
-.btn-help { background: transparent; width: 38px }
+.btn-submit { border: none !important; }
+.btn-cancel { background: var(--search-bg); color: var(--text-main); }
+.btn-help { background: transparent; width: 38px; }
 
 #passcodeHelpText {
     margin-top: 20px;
@@ -435,42 +479,5 @@ hr {
     border-top: 1px solid var(--border);
     text-align: left;
     font-size: 13px;
-    line-height: 1.5
-}
-
-.sticky-nav-content {
-    display: none;
-    align-items: center;
-    justify-content: space-between;
-    width: 90%;
-    max-width: 800px;
-    margin-bottom: 10px;
-}
-
-.nav-btns { display: flex; gap: 10px; }
-
-.search-wrapper.sticky {
-    flex-direction: column;
-    padding: 10px 0;
-}
-
-body.modal-open .search-wrapper.sticky {
-    display: none !important;
-}
-
-.search-wrapper.sticky .sticky-nav-content {
-    display: flex;
-}
-
-.search-wrapper.sticky .nav-logo {
-    height: 30px;
-}
-
-.top-nav {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    display: flex;
-    gap: 10px;
-    z-index: 10;
+    line-height: 1.5;
 }
