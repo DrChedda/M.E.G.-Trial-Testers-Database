@@ -116,13 +116,13 @@ function closeViewer() {
 }
 
 async function openAdmin() {
-    const code = prompt("Enter Admin Passcode:");
+    const code = prompt("Enter AC-X Passcode:");
     if (!code) return;
 
     const { data: isAdmin, error } = await _supabase.rpc('verify_admin', { user_code: code });
     
     if (error || !isAdmin) {
-        alert("Invalid Admin Credentials.");
+        alert("Invalid Credentials.");
         return;
     }
 
