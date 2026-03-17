@@ -90,11 +90,12 @@ body {
 }
 
 .sticky-nav-content {
+    position: absolute;
+    top: 20px;
+    left: 20px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    margin: 0 auto 20px auto;
+    gap: 15px;
     transition: all 0.3s ease;
 }
 
@@ -126,13 +127,18 @@ body {
 }
 
 .search-wrapper.sticky .sticky-nav-content {
+    position: relative;
+    top: 0;
+    left: 0;
     max-width: 584px;
     width: 90%;
-    margin-bottom: 8px;
+    margin: 0 auto 8px auto;
+    justify-content: space-between;
+    gap: 0;
 }
 
 .search-wrapper.sticky .nav-logo {
-    height: 30px;
+    height: 30px; 
 }
 
 .search-wrapper.sticky .filter-bar {
@@ -146,27 +152,6 @@ body.modal-open .search-wrapper.sticky {
 @keyframes slideDown {
     from { transform: translateY(-100%) }
     to { transform: translateY(0) }
-}
-
-.search-box {
-    width: 100%;
-    background: var(--search-bg);
-    border: 1px solid var(--search-border);
-    border-radius: var(--radius);
-    display: flex;
-    align-items: center;
-    padding: 2px 20px;
-    box-sizing: border-box;
-}
-
-input[type="text"], input[type="url"], select, textarea {
-    background: transparent;
-    border: none;
-    color: var(--text-main);
-    font-size: 16px;
-    height: 44px;
-    width: 100%;
-    outline: none;
 }
 
 /* --- ADMIN FORM --- */
