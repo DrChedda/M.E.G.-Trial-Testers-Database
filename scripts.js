@@ -68,29 +68,25 @@ async function openViewer(id, title) {
     const doc = documents.find(d => d.id === id);
     if (!doc) return;
 
-    if (doc.access_required !== "Public" && doc.is_password_protected) {
-        const userCode = prompt(`Clearance Required: ${doc.access_required}\nEnter Access Code:`);
+    let userCode = 'public';
+    
+    if (doc.is_password_protected && doc.access_required !== "Public") {
+        userCode = prompt(`Clearance Required: ${doc.access_required}\nEnter Access Code:`);
         if (!userCode) return;
-
-        const hasAccess = await verifyAccess(doc.access_required, userCode);
-        if (!hasAccess) {
-            alert("ACCESS DENIED: Invalid Clearance Code.");
-            return;
-        }
     }
 
-    const { data, error } = await _supabase
-        .from('documents')
-        .select('url')
-        .eq('id', id)
-        .single();
+    const { data: securedUrl, error } = await _supabase.rpc('get_secure_url', { 
+        doc_id: id, 
+        user_code: userCode 
+    });
 
-    if (error || !data.url) {
-        alert("Error retrieving source link.");
+    if (error || !securedUrl) {
+        alert("ACCESS DENIED: Invalid Clearance Code or Error.");
+        console.error("Fetch Error:", error);
         return;
     }
 
-    let finalUrl = data.url;
+    let finalUrl = securedUrl;
     if (finalUrl.includes('docs.google.com')) {
         finalUrl = finalUrl.split('/edit')[0] + (finalUrl.includes('spreadsheets') ? '/preview?rm=demo&chrome=false&widget=false' : '/preview');
     }
@@ -154,14 +150,14 @@ function renderAdminList() {
 
 async function deleteDocument(id) {
     if (!confirm("Confirm permanent deletion of this record?")) return;
+    
+    const { data: success, error } = await _supabase.rpc('secure_delete_document', { 
+        doc_id: id, 
+        admin_code: window.adminKey 
+    });
 
-    const { data: verify } = await _supabase.rpc('verify_admin', { user_code: window.adminKey });
-    if (verify !== true) return alert("Session invalid. Re-authenticate.");
-
-    const { error } = await _supabase.from('documents').delete().eq('id', id);
-
-    if (error) {
-        alert("Delete error: " + error.message);
+    if (error || !success) {
+        alert("Delete error: Unauthorized or invalid session.");
     } else {
         await fetchDocuments();
         renderAdminList();
