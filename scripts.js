@@ -64,24 +64,30 @@ function searchDocs() {
     }).join('');
 }
 
-async function openViewer(id, title) {
+aasync function openViewer(id, title) {
     const doc = documents.find(d => d.id === id);
     if (!doc) return;
 
-    let userCode = 'public';
-    if (doc.is_password_protected && doc.access_required !== "Public") {
-        userCode = prompt(`Clearance Required: ${doc.access_required}\nEnter Access Code:`);
+    let securedUrl = null;
+
+    if (!doc.is_password_protected) {
+        securedUrl = doc.url;
+    } 
+    
+    if (!securedUrl) {
+        const userCode = prompt(`Clearance Required: ${doc.access_required}\nEnter Access Code:`);
         if (!userCode) return;
-    }
 
-    const { data: securedUrl, error } = await _supabase.rpc('get_secure_url', { 
-        doc_id: id, 
-        user_code: userCode 
-    });
-
-    if (error || !securedUrl) {
-        alert("ACCESS DENIED: Invalid code or system error.");
-        return;
+        const { data, error } = await _supabase.rpc('get_secure_url', { 
+            doc_id: id, 
+            user_code: userCode 
+        });
+        
+        if (error || !data) {
+            alert("ACCESS DENIED: Invalid Clearance Level.");
+            return;
+        }
+        securedUrl = data;
     }
 
     const finalUrl = securedUrl.includes('docs.google.com') 
@@ -144,6 +150,48 @@ function renderAdminList() {
     `).join('');
 }
 
+async function submitDocument() {
+    const adminPasscode = window.adminKey;
+    if (!adminPasscode) {
+        alert("Session invalid. Please re-authenticate as admin.");
+        return;
+    }
+
+    const title = document.getElementById('newTitle').value;
+    const desc = document.getElementById('newDesc').value;
+    const url = document.getElementById('newUrl').value;
+    const category = document.getElementById('newCategory').value;
+    const type = document.getElementById('newType').value;
+    const accessValue = document.getElementById('newAccess').value;
+    const isProtected = accessValue !== "Public";
+
+    const { data: success, error } = await _supabase.rpc('secure_add_document', {
+        admin_code: adminPasscode,
+        new_title: title,
+        new_desc: desc,
+        new_url: url,
+        new_cat: category,
+        new_type: type,
+        new_access: accessValue,
+        new_protected: isProtected
+    });
+
+    if (error) {
+        console.error('RPC Error Details:', error.message, error.hint, error.details);
+        alert(`Error: ${error.message}`);
+        return;
+    }
+
+    if (success) {
+        alert("Document successfully added!");
+        document.getElementById('adminForm').reset();
+        await fetchDocuments();
+        renderAdminList();
+    } else {
+        alert("Authorization failed: Invalid Admin Code.");
+    }
+}
+
 async function deleteDocument(id) {
     if (!confirm("Confirm permanent deletion of this record?")) return;
 
@@ -152,36 +200,17 @@ async function deleteDocument(id) {
         admin_code: window.adminKey 
     });
 
-    if (error || !success) {
-        alert("Delete error: Unauthorized or invalid session.");
-    } else {
-        await fetchDocuments();
-        renderAdminList();
+    if (error) {
+        console.error('Delete RPC Error:', error.message);
+        alert("Delete error: " + error.message);
+        return;
     }
-}
 
-async function submitDocument() {
-    const accessValue = document.getElementById('newAccess').value;
-    const isProtected = accessValue !== "Public";
-
-    const { data: success, error } = await _supabase.rpc('secure_add_document', {
-        admin_code: window.adminKey,
-        new_title: document.getElementById('newTitle').value,
-        new_desc: document.getElementById('newDesc').value,
-        new_url: document.getElementById('newUrl').value,
-        new_cat: document.getElementById('newCategory').value,
-        new_type: document.getElementById('newType').value,
-        new_access: accessValue,
-        new_protected: isProtected
-    });
-
-    if (error || !success) {
-        alert("Error: Unauthorized or database failure.");
-    } else {
-        alert("Document successfully added to secure storage!");
-        document.getElementById('adminForm').reset();
+    if (success) {
         await fetchDocuments();
         renderAdminList();
+    } else {
+        alert("Unauthorized: Admin session expired.");
     }
 }
 
