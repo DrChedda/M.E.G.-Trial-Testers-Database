@@ -113,7 +113,9 @@ async function openViewer(id, title) {
     let securedUrl = doc.url; 
 
     if (!securedUrl) {
-        const userCode = prompt(`Clearance Required: ${doc.access_required}\nEnter Access Code:`);
+        const savedPass = localStorage.getItem(`pass_${doc.access_required}`) || localStorage.getItem('last_used_pass') || '';
+        
+        const userCode = prompt(`Clearance Required: ${doc.access_required}\nEnter Access Code:`, savedPass);
         if (!userCode) return;
 
         const { data, error } = await _supabase.rpc('get_secure_url', { 
@@ -130,6 +132,10 @@ async function openViewer(id, title) {
             alert("ACCESS DENIED: Invalid Clearance Level or Code.");
             return;
         }
+
+        localStorage.setItem(`pass_${doc.access_required}`, userCode);
+        localStorage.setItem('last_used_pass', userCode);
+        
         securedUrl = data;
     }
 
@@ -155,7 +161,8 @@ function closeViewer() {
 }
 
 async function openAdmin() {
-    const passcode = prompt("Enter AC-X Passcode:");
+    const savedAdminPass = localStorage.getItem('admin_passcode') || '';
+    const passcode = prompt("Enter AC-X Passcode:", savedAdminPass);
     if (!passcode) return;
 
     const { data: isAdmin, error } = await _supabase.rpc('verify_admin', { passcode: passcode });
@@ -165,6 +172,7 @@ async function openAdmin() {
         return;
     }
 
+    localStorage.setItem('admin_passcode', passcode);
     window.adminKey = passcode;
     document.getElementById('adminModal').style.display = 'flex';
 }
