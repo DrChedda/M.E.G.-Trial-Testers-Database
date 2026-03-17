@@ -69,7 +69,6 @@ async function openViewer(id, title) {
     if (!doc) return;
 
     let userCode = 'public';
-    
     if (doc.is_password_protected && doc.access_required !== "Public") {
         userCode = prompt(`Clearance Required: ${doc.access_required}\nEnter Access Code:`);
         if (!userCode) return;
@@ -81,20 +80,17 @@ async function openViewer(id, title) {
     });
 
     if (error || !securedUrl) {
-        alert("ACCESS DENIED: Invalid Clearance Code or Error.");
-        console.error("Fetch Error:", error);
+        alert("ACCESS DENIED: Invalid code or system error.");
         return;
     }
 
-    let finalUrl = securedUrl;
-    if (finalUrl.includes('docs.google.com')) {
-        finalUrl = finalUrl.split('/edit')[0] + (finalUrl.includes('spreadsheets') ? '/preview?rm=demo&chrome=false&widget=false' : '/preview');
-    }
+    const finalUrl = securedUrl.includes('docs.google.com') 
+        ? securedUrl.split('/edit')[0] + '/preview' 
+        : securedUrl;
 
     document.getElementById('modalTitle').innerText = title;
     document.getElementById('docIframe').src = finalUrl;
     document.getElementById('viewerModal').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
 }
 
 async function verifyAccess(requiredLevel, userCode) {
@@ -150,7 +146,7 @@ function renderAdminList() {
 
 async function deleteDocument(id) {
     if (!confirm("Confirm permanent deletion of this record?")) return;
-    
+
     const { data: success, error } = await _supabase.rpc('secure_delete_document', { 
         doc_id: id, 
         admin_code: window.adminKey 
