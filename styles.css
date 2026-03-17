@@ -346,16 +346,15 @@ hr {
     border: 0;
     border-top: 1px solid var(--border);
 }
-/* Container for Admin Buttons */
+
 .admin-btns {
     display: flex;
     gap: 6px;
     align-items: center;
 }
 
-/* Edit Button Styles */
 .edit-btn {
-    background: var(--doc-blue); /* Uses your existing Google Blue */
+    background: var(--doc-blue);
     color: white;
     border: none;
     padding: 4px 10px;
