@@ -36,6 +36,8 @@ function searchDocs() {
     const query = document.getElementById('searchInput').value.toLowerCase();
     const resultsArea = document.getElementById('results');
     
+    if (!resultsArea) return;
+
     const filtered = documents.filter(doc => {
         const matchesSearch = doc.title.toLowerCase().includes(query) || 
                               (doc.description && doc.description.toLowerCase().includes(query));
@@ -192,11 +194,14 @@ async function submitDocument() {
 
 function initTheme() {
     const savedTheme = localStorage.getItem('meg-theme') || 'light';
-    document.body.setAttribute('data-theme', savedTheme);
+    if (document.body) {
+        document.body.setAttribute('data-theme', savedTheme);
+    }
 }
 
 function toggleTheme() {
     const body = document.body;
+    if (!body) return;
     const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     body.setAttribute('data-theme', next);
     localStorage.setItem('meg-theme', next);
@@ -205,8 +210,10 @@ function toggleTheme() {
 window.onscroll = function() {
     const hero = document.getElementById('hero');
     const sw = document.getElementById('searchWrapper');
-    if (window.pageYOffset > (hero.offsetHeight - 80)) sw.classList.add("sticky");
-    else sw.classList.remove("sticky");
+    if (hero && sw) {
+        if (window.pageYOffset > (hero.offsetHeight - 80)) sw.classList.add("sticky");
+        else sw.classList.remove("sticky");
+    }
 };
 
-init();
+document.addEventListener('DOMContentLoaded', init);
