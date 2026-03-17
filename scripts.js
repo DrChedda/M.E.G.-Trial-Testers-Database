@@ -48,7 +48,7 @@ function searchDocs() {
     resultsArea.innerHTML = filtered.map(doc => {
         let tagClass = 'tag-' + doc.type;
         let isLocked = doc.is_password_protected && doc.access_required !== "Public";
-        let lockStatus = isLocked ? '🔒 ' : '';
+        let lockStatus = isLocked ? '' : '';
         
         return `
             <div class="result-item" onclick="openViewer('${doc.id}', '${doc.title}')">
