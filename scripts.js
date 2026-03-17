@@ -13,7 +13,7 @@ async function init() {
 async function fetchDocuments() {
     const { data, error } = await _supabase
         .from('documents')
-        .select('id, title, type, category, description, access_required, is_password_protected'); 
+        .select('id, title, type, category, description, access_required, is_password_protected, url'); 
 
     if (error) {
         console.error('Fetch Error:', error.message);
@@ -46,16 +46,16 @@ function searchDocs() {
     });
 
     resultsArea.innerHTML = filtered.map(doc => {
-        let tagClass = 'tag-' + doc.type;
-        let isLocked = doc.is_password_protected && doc.access_required !== "Public";
-        let lockStatus = isLocked ? '' : '';
+        const tagClass = 'tag-' + doc.type;
+        const isLocked = doc.is_password_protected && doc.access_required !== "Public";
+        const lockIcon = isLocked ? '🔒 ' : '';
         
         return `
             <div class="result-item" onclick="openViewer('${doc.id}', '${doc.title}')">
                 <div class="result-header">
                     <span class="tag ${tagClass}">${doc.type}</span>
                     <span class="category-text">${doc.category}</span>
-                    <span class="title-link">${lockStatus}${doc.title}</span>
+                    <span class="title-link">${lockIcon}${doc.title}</span>
                 </div>
                 <div class="result-desc">${doc.description || ''}</div>
                 <div class="clearance-tag">Access: ${doc.access_required}</div>
@@ -68,12 +68,8 @@ async function openViewer(id, title) {
     const doc = documents.find(d => d.id === id);
     if (!doc) return;
 
-    let securedUrl = null;
+    let securedUrl = doc.url;
 
-    if (!doc.is_password_protected) {
-        securedUrl = doc.url;
-    } 
-    
     if (!securedUrl) {
         const userCode = prompt(`Clearance Required: ${doc.access_required}\nEnter Access Code:`);
         if (!userCode) return;
@@ -84,7 +80,7 @@ async function openViewer(id, title) {
         });
         
         if (error || !data) {
-            alert("ACCESS DENIED: Invalid Clearance Level.");
+            alert("ACCESS DENIED: Invalid Clearance Level or Code.");
             return;
         }
         securedUrl = data;
@@ -94,17 +90,11 @@ async function openViewer(id, title) {
         ? securedUrl.split('/edit')[0] + '/preview' 
         : securedUrl;
 
+    const modal = document.getElementById('viewerModal');
     document.getElementById('modalTitle').innerText = title;
     document.getElementById('docIframe').src = finalUrl;
-    document.getElementById('viewerModal').style.display = 'flex';
-}
-
-async function verifyAccess(requiredLevel, userCode) {
-    const { data: isCorrect, error } = await _supabase.rpc('verify_clearance', {
-        req_level: requiredLevel,
-        user_code: userCode
-    });
-    return error ? false : isCorrect;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
 }
 
 function closeViewer() {
@@ -114,23 +104,19 @@ function closeViewer() {
 }
 
 async function openAdmin() {
-    const code = prompt("Enter AC-X Admin Passcode:");
+    const code = prompt("Enter Admin Passcode:");
     if (!code) return;
 
     const { data: isAdmin, error } = await _supabase.rpc('verify_admin', { user_code: code });
     
-    if (error) {
-        console.error("Admin verification error:", error.message);
+    if (error || !isAdmin) {
+        alert("Invalid Admin Credentials.");
         return;
     }
 
-    if (isAdmin === true) {
-        window.adminKey = code;
-        document.getElementById('adminModal').style.display = 'flex';
-        renderAdminList();
-    } else {
-        alert("Invalid Admin Credentials.");
-    }
+    window.adminKey = code;
+    document.getElementById('adminModal').style.display = 'flex';
+    renderAdminList();
 }
 
 function closeAdmin() {
@@ -152,80 +138,56 @@ function renderAdminList() {
 
 async function submitDocument() {
     const adminPasscode = window.adminKey;
-    if (!adminPasscode) {
-        alert("Session invalid. Please re-authenticate as admin.");
-        return;
-    }
+    if (!adminPasscode) return alert("Session expired.");
 
-    const title = document.getElementById('newTitle').value;
-    const desc = document.getElementById('newDesc').value;
-    const url = document.getElementById('newUrl').value;
-    const category = document.getElementById('newCategory').value;
-    const type = document.getElementById('newType').value;
     const accessValue = document.getElementById('newAccess').value;
     const isProtected = accessValue !== "Public";
 
     const { data: success, error } = await _supabase.rpc('secure_add_document', {
         admin_code: adminPasscode,
-        new_title: title,
-        new_desc: desc,
-        new_url: url,
-        new_cat: category,
-        new_type: type,
+        new_title: document.getElementById('newTitle').value,
+        new_desc: document.getElementById('newDesc').value,
+        new_url: document.getElementById('newUrl').value,
+        new_cat: document.getElementById('newCategory').value,
+        new_type: document.getElementById('newType').value,
         new_access: accessValue,
         new_protected: isProtected
     });
 
-    if (error) {
-        console.error('RPC Error Details:', error.message, error.hint, error.details);
-        alert(`Error: ${error.message}`);
-        return;
-    }
-
-    if (success) {
-        alert("Document successfully added!");
+    if (error || !success) {
+        alert("Error: " + (error?.message || "Unauthorized"));
+    } else {
+        alert("Document added successfully!");
         document.getElementById('adminForm').reset();
         await fetchDocuments();
         renderAdminList();
-    } else {
-        alert("Authorization failed: Invalid Admin Code.");
     }
 }
 
 async function deleteDocument(id) {
-    if (!confirm("Confirm permanent deletion of this record?")) return;
+    if (!confirm("Confirm permanent deletion?")) return;
 
     const { data: success, error } = await _supabase.rpc('secure_delete_document', { 
         doc_id: id, 
         admin_code: window.adminKey 
     });
 
-    if (error) {
-        console.error('Delete RPC Error:', error.message);
-        alert("Delete error: " + error.message);
-        return;
-    }
-
-    if (success) {
+    if (error || !success) {
+        alert("Delete error: Unauthorized.");
+    } else {
         await fetchDocuments();
         renderAdminList();
-    } else {
-        alert("Unauthorized: Admin session expired.");
     }
 }
 
 function initTheme() {
     const savedTheme = localStorage.getItem('meg-theme') || 'light';
-    if (document.body) {
-        document.body.setAttribute('data-theme', savedTheme);
-    }
+    document.body.setAttribute('data-theme', savedTheme);
 }
 
 function toggleTheme() {
-    const body = document.body;
-    if (!body) return;
-    const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    body.setAttribute('data-theme', next);
+    const next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.body.setAttribute('data-theme', next);
     localStorage.setItem('meg-theme', next);
 }
 
