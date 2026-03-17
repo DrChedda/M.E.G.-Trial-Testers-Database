@@ -119,9 +119,14 @@ async function openAdmin() {
     const code = prompt("Enter AC-X Admin Passcode:");
     if (!code) return;
 
-    const isAdmin = await _supabase.rpc('verify_admin', { user_code: code });
+    const { data: isAdmin, error } = await _supabase.rpc('verify_admin', { user_code: code });
     
-    if (isAdmin) {
+    if (error) {
+        console.error("Admin verification error:", error.message);
+        return;
+    }
+
+    if (isAdmin === true) {
         window.adminKey = code;
         document.getElementById('adminModal').style.display = 'flex';
         renderAdminList();
@@ -150,8 +155,8 @@ function renderAdminList() {
 async function deleteDocument(id) {
     if (!confirm("Confirm permanent deletion of this record?")) return;
 
-    const verify = await _supabase.rpc('verify_admin', { user_code: window.adminKey });
-    if (!verify) return alert("Session invalid. Re-authenticate.");
+    const { data: verify } = await _supabase.rpc('verify_admin', { user_code: window.adminKey });
+    if (verify !== true) return alert("Session invalid. Re-authenticate.");
 
     const { error } = await _supabase.from('documents').delete().eq('id', id);
 
@@ -177,8 +182,8 @@ async function submitDocument() {
         is_password_protected: isProtected
     };
 
-    const verify = await _supabase.rpc('verify_admin', { user_code: window.adminKey });
-    if (!verify) return alert("Session expired or invalid key.");
+    const { data: verify } = await _supabase.rpc('verify_admin', { user_code: window.adminKey });
+    if (verify !== true) return alert("Session expired or invalid key.");
 
     const { error } = await _supabase.from('documents').insert([docData]);
 
