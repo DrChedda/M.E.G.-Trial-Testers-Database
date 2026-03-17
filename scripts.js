@@ -187,13 +187,16 @@ async function updateDocument() {
         new_title: document.getElementById('newTitle').value,
         new_type: document.getElementById('newType').value,
         new_url: document.getElementById('newUrl').value,
-        passcode: adminPasscode
+        passcode: adminPasscode 
     });
 
-    if (error || !success) {
-        alert("Update Error: " + (error?.message || "Unauthorized"));
+    if (error) {
+        console.error("Update Error Details:", error);
+        alert("Update Error: " + error.message);
+    } else if (!success) {
+        alert("Unauthorized: Incorrect Passcode.");
     } else {
-        alert("Document updated!");
+        alert("Document updated successfully!");
         resetAdminForm();
         await fetchDocuments();
         renderAdminList();
