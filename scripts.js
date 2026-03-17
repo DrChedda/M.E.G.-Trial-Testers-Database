@@ -47,15 +47,13 @@ function searchDocs() {
 
     resultsArea.innerHTML = filtered.map(doc => {
         const tagClass = 'tag-' + doc.type;
-        const isLocked = doc.is_password_protected && doc.access_required !== "Public";
-        const lockIcon = isLocked ? '🔒 ' : '';
         
         return `
             <div class="result-item" onclick="openViewer('${doc.id}', '${doc.title}')">
                 <div class="result-header">
                     <span class="tag ${tagClass}">${doc.type}</span>
                     <span class="category-text">${doc.category}</span>
-                    <span class="title-link">${lockIcon}${doc.title}</span>
+                    <span class="title-link">${doc.title}</span>
                 </div>
                 <div class="result-desc">${doc.description || ''}</div>
                 <div class="clearance-tag">Access: ${doc.access_required}</div>
@@ -63,7 +61,6 @@ function searchDocs() {
         `;
     }).join('');
 }
-
 async function openViewer(id, title) {
     const doc = documents.find(d => d.id === id);
     if (!doc) return;
