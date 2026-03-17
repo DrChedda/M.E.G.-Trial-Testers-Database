@@ -61,6 +61,7 @@ function searchDocs() {
         `;
     }).join('');
 }
+
 async function openViewer(id, title) {
     const doc = documents.find(d => d.id === id);
     if (!doc) return;
@@ -75,17 +76,17 @@ async function openViewer(id, title) {
 
         const { data, error } = await _supabase.rpc('get_secure_url', { 
             doc_id: id, 
-            user_code: userCode 
+            user_code: String(userCode).trim() 
         });
         
         if (error) {
             console.error("RPC Database Error:", error.message, error.hint);
-            alert("System Error: Check console for details.");
+            alert(`ACCESS ERROR: ${error.message}`);
             return;
         }
 
         if (!data) {
-            console.warn("RPC returned null. Either the code is wrong or the URL is missing from the vault.");
+            console.warn("RPC returned null. Check if passcode matches the Level in access_codes table.");
             alert("ACCESS DENIED: Invalid Clearance Level or Code.");
             return;
         }
