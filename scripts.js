@@ -64,7 +64,7 @@ function searchDocs() {
     }).join('');
 }
 
-aasync function openViewer(id, title) {
+async function openViewer(id, title) {
     const doc = documents.find(d => d.id === id);
     if (!doc) return;
 
