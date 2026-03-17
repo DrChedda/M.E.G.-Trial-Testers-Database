@@ -141,10 +141,10 @@ function renderAdminList() {
     if (!listArea) return;
     
     listArea.innerHTML = documents.map(doc => `
-        <div class="admin-item" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+        <div class="admin-item">
             <span class="admin-item-title">${doc.title}</span>
             <div class="admin-btns">
-                <button class="edit-btn" onclick="populateEditForm('${doc.id}')" style="background:var(--accent-blue); color:white; border:none; padding:2px 8px; cursor:pointer; margin-right:5px;">Edit</button>
+                <button class="edit-btn" onclick="populateEditForm('${doc.id}')">Edit</button>
                 <button class="delete-btn" onclick="deleteDocument('${doc.id}')">Delete</button>
             </div>
         </div>
@@ -179,7 +179,7 @@ async function updateDocument() {
     const isProtected = accessValue !== "Public";
 
     const { data: success, error } = await _supabase.rpc('secure_update_document', {
-        admin_code: adminPasscode,
+        passcode: adminPasscode,
         doc_id: editingDocId,
         new_title: document.getElementById('newTitle').value,
         new_desc: document.getElementById('newDesc').value,
