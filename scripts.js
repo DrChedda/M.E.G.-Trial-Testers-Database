@@ -167,7 +167,6 @@ async function openAdmin() {
 
     window.adminKey = passcode;
     document.getElementById('adminModal').style.display = 'flex';
-    renderAdminList();
 }
 
 function closeAdmin() {
@@ -175,27 +174,12 @@ function closeAdmin() {
     resetAdminForm();
 }
 
-function renderAdminList() {
-    const listArea = document.getElementById('adminDocList');
-    if (!listArea) return;
+function adminEditByUuid() {
+    const id = document.getElementById('targetUuid').value.trim();
+    if (!id) return alert("Please enter a UUID.");
     
-    listArea.innerHTML = documents.map(doc => `
-        <div class="admin-item" title="ID: ${doc.id}">
-            <div style="display:flex; flex-direction:column; max-width:60%;">
-                <span class="admin-item-title">${doc.title}</span>
-                <span style="font-size:10px; color:var(--text-dim); font-family:monospace;">${doc.id.substring(0,8)}...</span>
-            </div>
-            <div class="admin-btns">
-                <button class="edit-btn" onclick="populateEditForm('${doc.id}')">Edit</button>
-                <button class="delete-btn" onclick="deleteDocument('${doc.id}')">Delete</button>
-            </div>
-        </div>
-    `).join('');
-}
-
-function populateEditForm(id) {
     const doc = documents.find(d => d.id === id);
-    if (!doc) return;
+    if (!doc) return alert("Document not found.");
 
     editingDocId = id;
     document.getElementById('newTitle').value = doc.title;
@@ -207,8 +191,28 @@ function populateEditForm(id) {
 
     const submitBtn = document.querySelector("button[onclick='submitDocument()']");
     if (submitBtn) {
-        submitBtn.innerText = "Save Changes";
+        submitBtn.innerText = "Save Changes (ID: " + id.substring(0,8) + ")";
         submitBtn.setAttribute("onclick", "updateDocument()");
+    }
+}
+
+async function adminDeleteByUuid() {
+    const id = document.getElementById('targetUuid').value.trim();
+    if (!id) return alert("Please enter a UUID.");
+
+    if (!confirm(`Confirm PERMANENT deletion of record: ${id}`)) return;
+
+    const { data: success, error } = await _supabase.rpc('secure_delete_document', { 
+        doc_id: id, 
+        passcode: window.adminKey 
+    });
+
+    if (error || !success) {
+        alert("Delete error: " + (error?.message || "Unauthorized"));
+    } else {
+        alert("Document deleted.");
+        document.getElementById('targetUuid').value = '';
+        await fetchDocuments();
     }
 }
 
@@ -233,13 +237,13 @@ async function updateDocument() {
         alert("Document updated!");
         resetAdminForm();
         await fetchDocuments();
-        renderAdminList();
     }
 }
 
 function resetAdminForm() {
     editingDocId = null;
     document.getElementById('adminForm').reset();
+    if(document.getElementById('targetUuid')) document.getElementById('targetUuid').value = '';
     const submitBtn = document.querySelector("button[onclick='updateDocument()']");
     if(submitBtn) {
         submitBtn.innerText = "Upload to Database";
@@ -266,22 +270,6 @@ async function submitDocument() {
         alert("Document added!");
         document.getElementById('adminForm').reset();
         await fetchDocuments();
-        renderAdminList();
-    }
-}
-
-async function deleteDocument(id) {
-    if (!confirm(`Confirm deletion for UUID: ${id}`)) return;
-    const { data: success, error } = await _supabase.rpc('secure_delete_document', { 
-        doc_id: id, 
-        passcode: window.adminKey 
-    });
-
-    if (error || !success) {
-        alert("Delete error: " + (error?.message || "Unauthorized"));
-    } else {
-        await fetchDocuments();
-        renderAdminList();
     }
 }
 

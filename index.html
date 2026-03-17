@@ -73,9 +73,14 @@ permalink: /main
 
         <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--border);">
 
-        <div style="font-size: 14px; font-weight: 500; color: var(--text-dim); margin-bottom: 10px;">Database Records (Delete)</div>
-        <div id="adminDocList" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 5px;">
+        <div style="font-size: 14px; font-weight: 500; color: var(--text-dim); margin-bottom: 10px;">Modify Existing Record</div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+            <input type="text" id="targetUuid" placeholder="Enter Document UUID">
+            <div style="display: flex; gap: 10px;">
+                <button type="button" class="theme-toggle" style="flex:1; background:var(--accent-blue);" onclick="adminEditByUuid()">Load for Edit</button>
+                <button type="button" class="theme-toggle" style="flex:1; background:#ff4444; color:white;" onclick="adminDeleteByUuid()">Delete Record</button>
             </div>
+        </div>
     </div>
 </div>
 
