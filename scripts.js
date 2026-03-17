@@ -119,14 +119,14 @@ async function openAdmin() {
     const code = prompt("Enter AC-X Passcode:");
     if (!code) return;
 
-    const { data: isAdmin, error } = await _supabase.rpc('verify_admin', { user_code: code });
+    const { data: isAdmin, error } = await _supabase.rpc('verify_admin', { passcode: passcode });
     
     if (error || !isAdmin) {
         alert("Invalid Credentials.");
         return;
     }
 
-    window.adminKey = code;
+    window.adminKey = passcode;
     document.getElementById('adminModal').style.display = 'flex';
     renderAdminList();
 }
