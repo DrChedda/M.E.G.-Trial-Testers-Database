@@ -172,7 +172,6 @@ function closeAdmin() {
     resetAdminForm();
 }
 
-// Admin Helpers for DRY Code
 const getFormData = () => ({
     title: document.getElementById('newTitle').value,
     desc: document.getElementById('newDesc').value,
@@ -191,7 +190,6 @@ const setFormData = (doc = {}) => {
     document.getElementById('newAccess').value = doc.access_required || 'Public';
 };
 
-// Reusable Database Action Handler
 async function handleAdminAction(rpcName, payload, successMessage) {
     const { data: success, error } = await _supabase.rpc(rpcName, { passcode: window.adminKey, ...payload });
     if (error || !success) {
