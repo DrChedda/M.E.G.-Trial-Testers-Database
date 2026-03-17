@@ -2,7 +2,6 @@ const SUPABASE_URL = 'https://zsmytsalkmtqlxflprnu.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_SD8kLVdtqkUpRMiUdwWBsQ_u0Gl0qOu';
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// State Management
 let documents = [], currentCategory = 'All', currentPage = 1, editingDocId = null;
 const itemsPerPage = 10;
 
@@ -14,7 +13,7 @@ async function init() {
 }
 
 async function fetchDocuments() {
-    const { data, error } = await _supabase.from('documents').select('*'); // Selects all columns concisely
+    const { data, error } = await _supabase.from('documents').select('*');
     if (error) return console.error('Fetch Error:', error.message);
     documents = data;
     searchDocs();
@@ -262,7 +261,7 @@ function resetAdminForm() {
     document.getElementById('adminForm').reset();
     if (document.getElementById('targetUuid')) document.getElementById('targetUuid').value = '';
     
-    const btn = document.querySelector("#adminForm button[type='button']"); // Target the submit button
+    const btn = document.querySelector("#adminForm button[type='button']");
     if (btn) {
         btn.innerText = "Upload to Database";
         btn.onclick = submitDocument;
