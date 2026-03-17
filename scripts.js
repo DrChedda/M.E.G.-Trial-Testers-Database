@@ -41,7 +41,6 @@ function searchDocs() {
     
     if (!resultsArea) return;
 
-    // 1. Filter the master list
     const filtered = documents.filter(doc => {
         const matchesSearch = doc.title.toLowerCase().includes(query) || 
                               (doc.description && doc.description.toLowerCase().includes(query));
@@ -49,16 +48,13 @@ function searchDocs() {
         return matchesSearch && matchesCategory;
     });
 
-    // 2. Calculate Pagination
     const totalPages = Math.ceil(filtered.length / itemsPerPage);
-    // Safety check: if searching makes current page > total pages, reset to 1
     if (currentPage > totalPages && totalPages > 0) currentPage = 1;
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const paginatedItems = filtered.slice(startIndex, endIndex);
 
-    // 3. Render Items
     resultsArea.innerHTML = paginatedItems.map(doc => {
         const tagClass = 'tag-' + doc.type;
         return `
