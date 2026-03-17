@@ -118,13 +118,15 @@ async function openViewer(id, title) {
         const userCode = prompt(`Clearance Required: ${doc.access_required}\nEnter Access Code:`, savedPass);
         if (!userCode) return;
 
+        console.log(`Attempting access for Doc: ${id} with Code: ${userCode}`);
+
         const { data, error } = await _supabase.rpc('get_secure_url', { 
             doc_id: id, 
-            passcode: String(userCode).trim() 
+            provided_passcode: String(userCode).trim()
         });
         
         if (error) {
-            alert(`ACCESS ERROR: ${error.message}`);
+            alert(`DATABASE ERROR: ${error.message}`);
             return;
         }
 
@@ -132,7 +134,6 @@ async function openViewer(id, title) {
             alert("ACCESS DENIED: Invalid Clearance Level or Code.");
             return;
         }
-
         localStorage.setItem(`pass_${doc.access_required}`, userCode);
         localStorage.setItem('last_used_pass', userCode);
         
