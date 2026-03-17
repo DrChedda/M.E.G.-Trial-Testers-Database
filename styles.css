@@ -1,5 +1,5 @@
 :root {
-    --bg-color: #ffffff;
+    --bg-color: #fff;
     --search-bg: #f1f3f4;
     --search-border: #dfe1e5;
     --text-main: #202124;
@@ -7,13 +7,13 @@
     --accent-purple: #8a2be2;
     --meg-purple: #311f3a;
     --link-color: #1a0dab;
-    --nav-bg: rgba(255, 255, 255, 0.98);
+    --nav-bg: #fffffffa;
     --radius: 8px;
     --doc-blue: #4285f4;
     --sheet-green: #0f9d58;
     --slide-yellow: #f4b400;
-    --overlay: rgba(0, 0, 0, 0.5);
-    --border: #dfe1e5;
+    --overlay: #00000080;
+    --border: #dfe1e5
 }
 
 [data-theme="dark"] {
@@ -24,9 +24,9 @@
     --text-dim: #9aa0a6;
     --accent-purple: #c58af9;
     --link-color: #c58af9;
-    --nav-bg: rgba(32, 33, 36, 0.98);
-    --overlay: rgba(0, 0, 0, 0.8);
-    --border: #5f6368;
+    --nav-bg: #202124fa;
+    --overlay: #000c;
+    --border: #5f6368
 }
 
 body {
@@ -35,7 +35,7 @@ body {
     background-color: var(--bg-color);
     color: var(--text-main);
     font-family: 'Roboto', sans-serif;
-    transition: background-color 0.3s ease;
+    transition: background-color .3s ease
 }
 
 .top-nav {
@@ -45,18 +45,22 @@ body {
     padding: 15px;
     z-index: 1001;
     display: flex;
-    gap: 10px;
+    gap: 10px
 }
 
-.theme-toggle {
+.theme-toggle, .filter-btn {
     background: var(--search-bg);
     border: 1px solid var(--search-border);
     color: var(--text-main);
+    cursor: pointer;
+    transition: all .2s
+}
+
+.theme-toggle {
     padding: 8px 16px;
     border-radius: var(--radius);
-    cursor: pointer;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 500
 }
 
 .hero {
@@ -65,22 +69,25 @@ body {
     align-items: center;
     justify-content: center;
     height: 50vh;
-    width: 100%;
+    width: 100%
 }
 
 .logo {
     font-family: 'Google Sans', sans-serif;
     font-size: 2.5rem;
     margin-bottom: 30px;
-    text-align: center;
+    text-align: center
 }
 
-.logo span { color: var(--accent-purple); font-weight: 500; }
+.logo span {
+    color: var(--accent-purple);
+    font-weight: 500
+}
 
 .search-wrapper {
     width: 90%;
     max-width: 584px;
-    z-index: 1000;
+    z-index: 1000
 }
 
 .search-wrapper.sticky {
@@ -88,6 +95,7 @@ body {
     top: 0;
     left: 0;
     right: 0;
+    z-index: 2500;
     max-width: 100%;
     width: 100%;
     background: var(--nav-bg);
@@ -95,12 +103,17 @@ body {
     border-bottom: 1px solid var(--search-border);
     display: flex;
     justify-content: center;
-    animation: slideDown 0.4s ease-out;
+    animation: slideDown .4s ease-out;
+    box-shadow: var(--shadow)
+}
+
+.search-wrapper.sticky .filter-bar {
+    display: none
 }
 
 @keyframes slideDown {
-    from { transform: translateY(-100%); }
-    to { transform: translateY(0); }
+    from { transform: translateY(-100%) }
+    to { transform: translateY(0) }
 }
 
 .search-box {
@@ -111,31 +124,27 @@ body {
     border-radius: var(--radius);
     display: flex;
     align-items: center;
-    padding: 2px 20px;
+    padding: 2px 20px
 }
 
-input[type="text"], 
-input[type="url"],
-select, 
-textarea {
+input[type="text"], input[type="url"], select, textarea {
     background: transparent;
     border: none;
     color: var(--text-main);
     font-size: 16px;
     height: 44px;
     width: 100%;
-    outline: none;
+    outline: none
 }
 
 #adminForm {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-top: 20px;
+    margin-top: 20px
 }
 
-#adminForm input, 
-#adminForm select {
+#adminForm input, #adminForm select {
     box-sizing: border-box;
     width: 100%;
     background: var(--search-bg);
@@ -145,28 +154,27 @@ textarea {
     color: var(--text-main);
     font-size: 14px;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color .2s
 }
 
-#adminForm input:focus, 
-#adminForm select:focus {
-    border-color: var(--accent-purple);
+#adminForm input:focus, #adminForm select:focus, #passcodeInput:focus {
+    border-color: var(--accent-purple)
 }
 
 #adminForm button {
     width: 100%;
     margin-top: 5px;
     padding: 12px;
-    font-weight: 500;
+    font-weight: 500
 }
 
 .results-container {
     width: 95%;
     max-width: 800px;
-    margin: 20px auto 100px auto;
+    margin: 20px auto 100px;
     padding: 20px;
     background: var(--bg-color);
-    border-radius: var(--radius);
+    border-radius: var(--radius)
 }
 
 .result-item {
@@ -174,12 +182,25 @@ textarea {
     padding: 15px;
     border-radius: var(--radius);
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background .2s
 }
 
-.result-item:hover { background: var(--search-bg); }
-.result-header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
-.result-item .title-link { color: var(--link-color); text-decoration: none; font-size: 1.2rem; }
+.result-item:hover {
+    background: var(--search-bg)
+}
+
+.result-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px
+}
+
+.result-item .title-link {
+    color: var(--link-color);
+    text-decoration: none;
+    font-size: 1.2rem
+}
 
 .tag {
     font-size: 11px;
@@ -187,24 +208,27 @@ textarea {
     text-transform: uppercase;
     padding: 2px 8px;
     border-radius: 4px;
-    color: white;
+    color: #fff
 }
 
-.tag-doc { background-color: var(--doc-blue); }
-.tag-sheet { background-color: var(--sheet-green); }
-.tag-slide { background-color: var(--slide-yellow); }
-.tag-other { background-color: var(--text-dim); }
+.tag-doc { background-color: var(--doc-blue) }
+.tag-sheet { background-color: var(--sheet-green) }
+.tag-slide { background-color: var(--slide-yellow) }
+.tag-other { background-color: var(--text-dim) }
 
-.result-desc { color: var(--text-dim); font-size: 0.95rem; }
+.result-desc, .clearance-tag, .category-text, #passcodeHelpText {
+    color: var(--text-dim)
+}
+
+.result-desc { font-size: .95rem }
 
 .clearance-tag {
     font-size: 11px;
     margin-top: 8px;
-    color: var(--text-dim);
-    opacity: 0.8;
+    opacity: .8
 }
 
-#viewerModal, #adminModal {
+#viewerModal, #adminModal, #passcodePromptModal {
     display: none;
     position: fixed;
     top: 0;
@@ -212,10 +236,12 @@ textarea {
     width: 100%;
     height: 100%;
     background: var(--overlay);
-    z-index: 2000;
     justify-content: center;
-    align-items: center;
+    align-items: center
 }
+
+#viewerModal { z-index: 2000 }
+#passcodePromptModal { z-index: 4000 }
 
 .modal-content {
     width: 95vw;
@@ -225,91 +251,91 @@ textarea {
     border-radius: var(--radius);
     display: flex;
     flex-direction: column;
-    box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 50px #00000080;
     margin: auto;
-    overflow: hidden;
+    overflow: hidden
 }
 
-#adminModal .modal-content {
-    max-width: 500px;
-    width: 90%;
+#adminModal .modal-content, #passcodePromptModal .modal-content {
     height: auto;
-    padding: 24px;
+    padding: 24px
+}
+
+#adminModal .modal-content { max-width: 500px; width: 90% }
+
+#passcodePromptModal .modal-content {
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 30px #0000004d
 }
 
 .modal-header {
     background-color: var(--meg-purple);
-    color: white;
+    color: #fff;
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: center
 }
 
 .close-btn {
-    background: rgba(255,255,255,0.2);
-    color: white;
-    border: 1px solid rgba(255,255,255,0.3);
+    background: #fff3;
+    color: #fff;
+    border: 1px solid #ffffff4d;
     padding: 6px 16px;
     border-radius: 4px;
     cursor: pointer;
     font-weight: 500;
-    transition: background 0.2s;
+    transition: background .2s
 }
 
-.close-btn:hover { background: rgba(255,255,255,0.3); }
+.close-btn:hover { background: #ffffff4d }
 
 #docIframe {
     flex-grow: 1;
     border: none;
     width: 100%;
     height: 100%;
-    display: block;
+    display: block
 }
 
-.filter-bar {
+.filter-bar, .pagination-controls, .passcode-btns {
     display: flex;
     gap: 10px;
-    justify-content: center;
-    margin-bottom: 20px;
+    justify-content: center
 }
+
+.filter-bar { margin-bottom: 20px }
 
 .filter-btn {
-    background: var(--search-bg);
-    border: 1px solid var(--search-border);
-    color: var(--text-main);
     padding: 6px 14px;
     border-radius: 20px;
-    cursor: pointer;
-    font-size: 13px;
-    transition: all 0.2s;
+    font-size: 13px
 }
 
-.filter-btn.active {
+.filter-btn.active, .btn-submit {
     background: var(--accent-purple);
-    color: white;
-    border-color: var(--accent-purple);
+    color: #fff;
+    border-color: var(--accent-purple)
 }
 
 .category-text {
     font-size: 12px;
-    color: var(--text-dim);
     font-weight: 500;
     text-transform: uppercase;
-    margin-right: 5px;
+    margin-right: 5px
 }
-
-.search-wrapper.sticky .filter-bar { display: none; }
 
 .admin-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(0, 0, 0, 0.05);
+    background: #0000000d;
     padding: 8px;
     border-radius: 4px;
     border: 1px solid var(--border);
-    margin-bottom: 5px;
+    margin-bottom: 5px
 }
 
 .admin-item-title {
@@ -318,19 +344,20 @@ textarea {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 70%;
-    color: var(--text-main);
+    color: var(--text-main)
 }
 
-.delete-btn {
-    background: #ff4d4d;
-    color: white;
+.delete-btn, .edit-btn {
+    color: #fff;
     border: none;
     padding: 4px 10px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 500
 }
+
+.delete-btn { background: #ff4d4d }
 
 #adminDocList {
     max-height: 200px;
@@ -338,51 +365,32 @@ textarea {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding-right: 5px;
+    padding-right: 5px
 }
 
 hr {
     margin: 15px 0;
     border: 0;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--border)
 }
 
 .admin-btns {
     display: flex;
     gap: 6px;
-    align-items: center;
+    align-items: center
 }
 
 .edit-btn {
     background: var(--doc-blue);
-    color: white;
-    border: none;
-    padding: 4px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 11px;
-    font-weight: 500;
-    transition: opacity 0.2s, transform 0.1s;
+    transition: opacity .2s, transform .1s
 }
 
-.edit-btn:hover {
-    opacity: 0.9;
-}
+.edit-btn:hover { opacity: .9 }
+.edit-btn:active { transform: scale(.95) }
 
-.edit-btn:active {
-    transform: scale(0.95);
-}
+[data-theme="dark"] .edit-btn { background: #5c9aff }
 
-[data-theme="dark"] .edit-btn {
-    background: #5c9aff;
-}
-
-.pagination-controls {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin: 40px 0;
-}
+.pagination-controls { margin: 40px 0; gap: 8px }
 
 .pagination-controls .filter-btn {
     min-width: 40px;
@@ -390,45 +398,7 @@ hr {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
-}
-
-.search-wrapper.sticky {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 2500;
-    background: var(--nav-bg);
-    padding: 12px 0;
-    border-bottom: 1px solid var(--search-border);
-    display: flex;
-    justify-content: center;
-    box-shadow: var(--shadow);
-}
-
-#passcodePromptModal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--overlay);
-    z-index: 4000;
-    justify-content: center;
-    align-items: center;
-}
-
-#passcodePromptModal .modal-content {
-    max-width: 400px;
-    width: 90%;
-    height: auto;
-    padding: 24px;
-    text-align: center;
-    border-radius: var(--radius);
-    background: var(--bg-color);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border-radius: 8px
 }
 
 #passcodeInput {
@@ -442,17 +412,7 @@ hr {
     font-size: 16px;
     margin: 20px 0;
     outline: none;
-    transition: border-color 0.2s;
-}
-
-#passcodeInput:focus {
-    border-color: var(--accent-purple);
-}
-
-.passcode-btns {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
+    transition: border-color .2s
 }
 
 .passcode-btns button {
@@ -462,25 +422,12 @@ hr {
     cursor: pointer;
     font-weight: 500;
     font-size: 14px;
-    transition: all 0.2s;
+    transition: all .2s
 }
 
-.btn-submit {
-    background: var(--accent-purple);
-    color: white;
-    border: none !important;
-}
-
-.btn-cancel {
-    background: var(--search-bg);
-    color: var(--text-main);
-}
-
-.btn-help {
-    background: transparent;
-    color: var(--text-dim);
-    width: 38px;
-}
+.btn-submit { border: none!important }
+.btn-cancel { background: var(--search-bg); color: var(--text-main) }
+.btn-help { background: transparent; width: 38px }
 
 #passcodeHelpText {
     margin-top: 20px;
@@ -488,6 +435,5 @@ hr {
     border-top: 1px solid var(--border);
     text-align: left;
     font-size: 13px;
-    color: var(--text-dim);
-    line-height: 1.5;
+    line-height: 1.5
 }
