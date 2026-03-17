@@ -116,8 +116,8 @@ function closeViewer() {
 }
 
 async function openAdmin() {
-    const code = prompt("Enter AC-X Passcode:");
-    if (!code) return;
+    const passcode = prompt("Enter AC-X Passcode:");
+    if (!passcode) return;
 
     const { data: isAdmin, error } = await _supabase.rpc('verify_admin', { user_code: passcode });
     
