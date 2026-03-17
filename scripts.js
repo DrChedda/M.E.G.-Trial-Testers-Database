@@ -179,15 +179,15 @@ async function updateDocument() {
     const isProtected = accessValue !== "Public";
 
     const { data: success, error } = await _supabase.rpc('secure_update_document', {
-        passcode: adminPasscode,
         doc_id: editingDocId,
-        new_title: document.getElementById('newTitle').value,
-        new_desc: document.getElementById('newDesc').value,
-        new_url: document.getElementById('newUrl').value,
-        new_cat: document.getElementById('newCategory').value,
-        new_type: document.getElementById('newType').value,
         new_access: accessValue,
-        new_protected: isProtected
+        new_cat: document.getElementById('newCategory').value,
+        new_desc: document.getElementById('newDesc').value,
+        new_protected: isProtected,
+        new_title: document.getElementById('newTitle').value,
+        new_type: document.getElementById('newType').value,
+        new_url: document.getElementById('newUrl').value,
+        passcode: adminPasscode
     });
 
     if (error || !success) {
