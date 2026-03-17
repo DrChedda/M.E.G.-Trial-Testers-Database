@@ -164,25 +164,21 @@ async function submitDocument() {
     const accessValue = document.getElementById('newAccess').value;
     const isProtected = accessValue !== "Public";
 
-    const docData = {
-        title: document.getElementById('newTitle').value,
-        description: document.getElementById('newDesc').value,
-        url: document.getElementById('newUrl').value,
-        category: document.getElementById('newCategory').value,
-        type: document.getElementById('newType').value,
-        access_required: accessValue, 
-        is_password_protected: isProtected
-    };
+    const { data: success, error } = await _supabase.rpc('secure_add_document', {
+        admin_code: window.adminKey,
+        new_title: document.getElementById('newTitle').value,
+        new_desc: document.getElementById('newDesc').value,
+        new_url: document.getElementById('newUrl').value,
+        new_cat: document.getElementById('newCategory').value,
+        new_type: document.getElementById('newType').value,
+        new_access: accessValue,
+        new_protected: isProtected
+    });
 
-    const { data: verify } = await _supabase.rpc('verify_admin', { user_code: window.adminKey });
-    if (verify !== true) return alert("Session expired or invalid key.");
-
-    const { error } = await _supabase.from('documents').insert([docData]);
-
-    if (error) {
-        alert("Error: " + error.message);
+    if (error || !success) {
+        alert("Error: Unauthorized or database failure.");
     } else {
-        alert("Document successfully added!");
+        alert("Document successfully added to secure storage!");
         document.getElementById('adminForm').reset();
         await fetchDocuments();
         renderAdminList();
