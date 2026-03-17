@@ -32,12 +32,16 @@ function filterCategory(cat) {
     searchDocs();
 }
 
+let currentPage = 1;
+const itemsPerPage = 10;
+
 function searchDocs() {
     const query = document.getElementById('searchInput').value.toLowerCase();
     const resultsArea = document.getElementById('results');
     
     if (!resultsArea) return;
 
+    // 1. Filter the master list
     const filtered = documents.filter(doc => {
         const matchesSearch = doc.title.toLowerCase().includes(query) || 
                               (doc.description && doc.description.toLowerCase().includes(query));
@@ -45,9 +49,18 @@ function searchDocs() {
         return matchesSearch && matchesCategory;
     });
 
-    resultsArea.innerHTML = filtered.map(doc => {
+    // 2. Calculate Pagination
+    const totalPages = Math.ceil(filtered.length / itemsPerPage);
+    // Safety check: if searching makes current page > total pages, reset to 1
+    if (currentPage > totalPages && totalPages > 0) currentPage = 1;
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = filtered.slice(startIndex, endIndex);
+
+    // 3. Render Items
+    resultsArea.innerHTML = paginatedItems.map(doc => {
         const tagClass = 'tag-' + doc.type;
-        
         return `
             <div class="result-item" onclick="openViewer('${doc.id}', '${doc.title}')">
                 <div class="result-header">
@@ -60,6 +73,40 @@ function searchDocs() {
             </div>
         `;
     }).join('');
+
+    renderPagination(totalPages);
+}
+
+function renderPagination(totalPages) {
+    const resultsArea = document.getElementById('results');
+    if (totalPages <= 1) return;
+
+    const nav = document.createElement('div');
+    nav.className = 'pagination-controls';
+    nav.style = "display:flex; justify-content:center; gap:10px; margin-top:30px; padding-bottom:50px;";
+
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.innerText = i;
+        btn.className = `filter-btn ${i === currentPage ? 'active' : ''}`;
+        btn.onclick = () => {
+            currentPage = i;
+            searchDocs();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        };
+        nav.appendChild(btn);
+    }
+    resultsArea.appendChild(nav);
+}
+
+function filterCategory(cat) {
+    currentCategory = cat;
+    currentPage = 1;
+    const buttons = document.querySelectorAll('.filter-btn');
+    buttons.forEach(btn => {
+        btn.classList.toggle('active', btn.innerText.includes(cat));
+    });
+    searchDocs();
 }
 
 async function openViewer(id, title) {

@@ -376,3 +376,19 @@ hr {
 [data-theme="dark"] .edit-btn {
     background: #5c9aff;
 }
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 40px 0;
+}
+
+.pagination-controls .filter-btn {
+    min-width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
