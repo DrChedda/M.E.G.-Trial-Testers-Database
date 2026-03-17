@@ -68,21 +68,31 @@ async function openViewer(id, title) {
     const doc = documents.find(d => d.id === id);
     if (!doc) return;
 
-    let securedUrl = doc.url;
+    let securedUrl = doc.url; 
 
     if (!securedUrl) {
         const userCode = prompt(`Clearance Required: ${doc.access_required}\nEnter Access Code:`);
         if (!userCode) return;
+
+        console.log(`Attempting RPC for ${id} with code: ${userCode}`);
 
         const { data, error } = await _supabase.rpc('get_secure_url', { 
             doc_id: id, 
             user_code: userCode 
         });
         
-        if (error || !data) {
+        if (error) {
+            console.error("RPC Database Error:", error.message, error.hint);
+            alert("System Error: Check console for details.");
+            return;
+        }
+
+        if (!data) {
+            console.warn("RPC returned null. Either the code is wrong or the URL is missing from the vault.");
             alert("ACCESS DENIED: Invalid Clearance Level or Code.");
             return;
         }
+        
         securedUrl = data;
     }
 
@@ -91,10 +101,14 @@ async function openViewer(id, title) {
         : securedUrl;
 
     const modal = document.getElementById('viewerModal');
-    document.getElementById('modalTitle').innerText = title;
-    document.getElementById('docIframe').src = finalUrl;
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+    const iframe = document.getElementById('docIframe');
+    
+    if (modal && iframe) {
+        document.getElementById('modalTitle').innerText = title;
+        iframe.src = finalUrl;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
 }
 
 function closeViewer() {
