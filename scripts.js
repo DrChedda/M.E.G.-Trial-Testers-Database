@@ -126,11 +126,11 @@ async function openViewer(id, title) {
 
     let securedUrl = null;
 
-    if (doc.access_required && doc.access_required !== 'Public') {=
+    if (doc.access_required && doc.access_required !== 'Public') {
         let savedPass = localStorage.getItem('highest_access_pass') || 
                         localStorage.getItem(`pass_${doc.access_required}`) || '';
 
-        let userCode = await requestAccessCode(doc.access_required, savedPass);
+        const userCode = await requestAccessCode(doc.access_required, savedPass);
         if (!userCode) return;
 
         const { data, error } = await _supabase.rpc('get_secure_url', { 
@@ -139,8 +139,7 @@ async function openViewer(id, title) {
         });
         
         if (error || !data) {
-            localStorage.removeItem('highest_access_pass');
-            return alert("ACCESS DENIED: Your clearance level is insufficient for this file.");
+            return alert("ACCESS DENIED: Insufficient clearance level or invalid code.");
         }
         
         localStorage.setItem('highest_access_pass', userCode.trim());
@@ -162,6 +161,7 @@ async function openViewer(id, title) {
         document.body.classList.add('modal-open');
     }
 }
+
 function closeViewer() {
     document.getElementById('viewerModal').style.display = 'none';
     document.getElementById('docIframe').src = '';
