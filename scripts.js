@@ -2,7 +2,6 @@ const SUPABASE_URL = 'https://zsmytsalkmtqlxflprnu.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_SD8kLVdtqkUpRMiUdwWBsQ_u0Gl0qOu';
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// State Management
 let documents = [], currentCategory = 'All', currentPage = 1, editingDocId = null;
 const itemsPerPage = 10;
 
@@ -14,7 +13,7 @@ async function init() {
 }
 
 async function fetchDocuments() {
-    const { data, error } = await _supabase.from('documents').select('*'); // Selects all columns concisely
+    const { data, error } = await _supabase.from('documents').select('*');
     if (error) return console.error('Fetch Error:', error.message);
     documents = data;
     searchDocs();
@@ -61,6 +60,7 @@ function requestAccessCode(clearanceLevel, savedPass) {
         document.getElementById('passcodeInput').value = savedPass || '';
         document.getElementById('passcodeHelpText').style.display = 'none';
         document.getElementById('passcodePromptModal').style.display = 'flex';
+        document.body.classList.add('modal-open');
         
         passcodePromiseResolve = resolve;
     });
@@ -69,11 +69,13 @@ function requestAccessCode(clearanceLevel, savedPass) {
 function submitPasscode() {
     const code = document.getElementById('passcodeInput').value;
     document.getElementById('passcodePromptModal').style.display = 'none';
+    document.body.classList.remove('modal-open');
     if (passcodePromiseResolve) passcodePromiseResolve(code);
 }
 
 function cancelPasscode() {
     document.getElementById('passcodePromptModal').style.display = 'none';
+    document.body.classList.remove('modal-open');
     if (passcodePromiseResolve) passcodePromiseResolve(null);
 }
 
@@ -122,34 +124,53 @@ async function openViewer(id, title) {
     const doc = documents.find(d => d.id === id);
     if (!doc) return;
 
-    let securedUrl = doc.url; 
+    let securedUrl = null;
 
-    if (!securedUrl) {
-        const savedPass = localStorage.getItem(`pass_${doc.access_required}`) || localStorage.getItem('last_used_pass') || '';
+    if (doc.access_required && doc.access_required !== 'Public') {
+        let savedPass = localStorage.getItem('highest_access_pass') || 
+                        localStorage.getItem(`pass_${doc.access_required}`) || '';
+
         const userCode = await requestAccessCode(doc.access_required, savedPass);
         if (!userCode) return;
 
-        const { data, error } = await _supabase.rpc('get_secure_url', { doc_id: id, provided_passcode: userCode.trim() });
+        const { data, error } = await _supabase.rpc('get_secure_url', { 
+            doc_id: id, 
+            provided_passcode: userCode.trim() 
+        });
         
-        if (error || !data) return alert(error ? `DATABASE ERROR: ${error.message}` : "ACCESS DENIED: Invalid Clearance Level or Code.");
+        if (error || !data) {
+            return alert("ACCESS DENIED: Insufficient clearance level or invalid code.");
+        }
         
-        localStorage.setItem(`pass_${doc.access_required}`, userCode);
-        localStorage.setItem('last_used_pass', userCode);
+        localStorage.setItem('highest_access_pass', userCode.trim());
+        localStorage.setItem(`pass_${doc.access_required}`, userCode.trim());
         securedUrl = data;
+    } else {
+        securedUrl = doc.url;
     }
+
+    if (!securedUrl) return;
 
     const modal = document.getElementById('viewerModal');
     if (modal) {
         document.getElementById('modalTitle').innerText = title;
-        document.getElementById('docIframe').src = securedUrl.includes('docs.google.com') ? securedUrl.split('/edit')[0] + '/preview' : securedUrl;
+        document.getElementById('docIframe').src = securedUrl.includes('docs.google.com') 
+            ? securedUrl.split('/edit')[0] + '/preview' 
+            : securedUrl;
         modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
+        document.body.classList.add('modal-open');
     }
+}
+
+function openInNewTab() {
+    const iframe = document.getElementById('docIframe');
+    window.open(iframe.src, '_blank');
 }
 
 function closeViewer() {
     document.getElementById('viewerModal').style.display = 'none';
     document.getElementById('docIframe').src = '';
+    document.body.classList.remove('modal-open');
     document.body.style.overflow = 'auto';
 }
 
@@ -165,10 +186,12 @@ async function openAdmin() {
     localStorage.setItem('admin_passcode', passcode);
     window.adminKey = passcode;
     document.getElementById('adminModal').style.display = 'flex';
+    document.body.classList.add('modal-open');
 }
 
 function closeAdmin() {
     document.getElementById('adminModal').style.display = 'none';
+    document.body.classList.remove('modal-open');
     resetAdminForm();
 }
 
@@ -262,7 +285,7 @@ function resetAdminForm() {
     document.getElementById('adminForm').reset();
     if (document.getElementById('targetUuid')) document.getElementById('targetUuid').value = '';
     
-    const btn = document.querySelector("#adminForm button[type='button']"); // Target the submit button
+    const btn = document.querySelector("#adminForm button[type='button']");
     if (btn) {
         btn.innerText = "Upload to Database";
         btn.onclick = submitDocument;
@@ -282,8 +305,12 @@ function toggleTheme() {
 }
 
 window.onscroll = () => {
-    const hero = document.getElementById('hero'), sw = document.getElementById('searchWrapper');
-    if (hero && sw) sw.classList.toggle("sticky", window.pageYOffset > (hero.offsetHeight - 80));
+    const hero = document.getElementById('hero');
+    const sw = document.getElementById('searchWrapper');
+    if (hero && sw) {
+        const isSticky = window.pageYOffset > (hero.offsetHeight - 60);
+        sw.classList.toggle("sticky", isSticky);
+    }
 };
 
 document.addEventListener('DOMContentLoaded', init);
