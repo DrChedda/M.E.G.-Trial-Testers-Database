@@ -348,6 +348,11 @@ body.modal-open .search-wrapper.sticky {
     align-items: center;
 }
 
+.modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
 .close-btn {
     background: #fff3;
     color: #fff;
@@ -362,7 +367,7 @@ body.modal-open .search-wrapper.sticky {
 .close-btn:hover { background: #ffffff4d; }
 
 .open-new-tab-btn {
-    background: #ffffff4d;
+    background: #fff3;
     color: #fff;
     border: 1px solid #ffffff4d;
     padding: 6px 16px;
