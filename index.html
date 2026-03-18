@@ -31,10 +31,30 @@
 </head>
 <body data-theme="light">
 
-<div class="top-nav">
-    <button class="theme-toggle" onclick="toggleTheme()">Theme</button>
-    <button class="theme-toggle" onclick="openAdmin()">Manage</button>
-    <img src="favicon.png" alt="M.E.G. Logo" class="nav-logo">
+<div class="hero" id="hero">
+    <div class="logo">M.E.G. <span>Trial Tester</span> Document Database</div>
+    
+    <div class="search-wrapper" id="searchWrapper">
+        <div class="sticky-nav-content">
+            <img src="favicon.png" alt="M.E.G. Logo" class="nav-logo">
+            <div class="nav-btns">
+                <button class="theme-toggle" onclick="toggleTheme()">Theme</button>
+                <button class="theme-toggle" onclick="openAdmin()">Manage</button>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterCategory('All')">All</button>
+            <button class="filter-btn" onclick="filterCategory('General')">General</button>
+            <button class="filter-btn" onclick="filterCategory('Research')">Research</button>
+            <button class="filter-btn" onclick="filterCategory('Theory')">Theory</button>
+            <button class="filter-btn" onclick="filterCategory('Other')">Other</button>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search database..." onkeyup="searchDocs()">
+        </div>
+    </div>
 </div>
 
 <div id="adminModal" class="viewer-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:var(--overlay); z-index:3000; justify-content:center; align-items:center;">
@@ -52,6 +72,8 @@
             <select id="newCategory">
                 <option value="General">General</option>
                 <option value="Research">Research</option>
+                <option value="Theory">Theory</option>
+                <option value="Other">Other</option>
             </select>
             <select id="newType">
                 <option value="doc">Doc</option>
@@ -85,7 +107,10 @@
     <div class="modal-content">
         <div class="modal-header">
             <span id="modalTitle" style="font-weight: 500;">Document Viewer</span>
-            <button class="close-btn" onclick="closeViewer()">Close</button>
+            <div class="modal-actions">
+                <button class="open-new-tab-btn" onclick="openInNewTab()">Open in New Tab</button>
+                <button class="close-btn" onclick="closeViewer()">Close</button>
+            </div>
         </div>
         <iframe id="docIframe" src=""></iframe>
     </div>
@@ -104,7 +129,7 @@
         <input type="password" id="passcodeInput" placeholder="Enter Access Code">
         <div class="passcode-btns">
             <button class="btn-cancel" onclick="cancelPasscode()">Cancel</button>
-            <button class="btn-submit" onclick="submitPasscode()">Verify</button>
+            <button class="btn-submit" onclick="submitPasscode()">Access</button>
             <button class="btn-help" onclick="togglePasscodeHelp()">?</button>
         </div>
         <div id="passcodeHelpText" style="display: none;">
@@ -115,21 +140,6 @@
                 <li><strong>AC-V:</strong> NCO (Trial Lead) and above.</li>
                 <li><strong>AC-X:</strong> MIDCOM (Research Secretary) and above.</li>
             </ul>
-        </div>
-    </div>
-</div>
-
-<div class="hero" id="hero">
-    <div class="logo">M.E.G. <span>Trial Tester</span> Document Database</div>
-    <div class="search-wrapper" id="searchWrapper">
-        <div class="filter-bar">
-            <button class="filter-btn active" onclick="filterCategory('All')">All</button>
-            <button class="filter-btn" onclick="filterCategory('General')">General Documents</button>
-            <button class="filter-btn" onclick="filterCategory('Research')">Research Papers</button>
-        </div>
-
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search database..." onkeyup="searchDocs()">
         </div>
     </div>
 </div>
