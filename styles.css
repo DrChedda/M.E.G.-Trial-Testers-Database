@@ -361,6 +361,19 @@ body.modal-open .search-wrapper.sticky {
 
 .close-btn:hover { background: #ffffff4d; }
 
+.open-new-tab-btn {
+    background: #ffffff4d;
+    color: #fff;
+    border: 1px solid #ffffff4d;
+    padding: 6px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background .2s;
+}
+
+.open-new-tab-btn:hover { background: #ffffff4d; }
+
 #docIframe {
     flex-grow: 1;
     border: none;
