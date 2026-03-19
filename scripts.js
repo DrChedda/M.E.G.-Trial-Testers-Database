@@ -164,7 +164,8 @@ async function openViewer(id, title) {
 
 function openInNewTab() {
     const iframe = document.getElementById('docIframe');
-    window.open(iframe.src, '_blank');
+    const cleanUrl = iframe.src.replace('/preview', '/view');
+    window.open(cleanUrl, '_blank');
 }
 
 function closeViewer() {
