@@ -130,6 +130,8 @@ textarea {
     border-color: var(--accent-purple);
     background: var(--bg-color);
 }
+
+/* --- SEARCH WRAPPER (HERO STATE) --- */
 .search-wrapper {
     width: 90%;
     max-width: 584px;
@@ -137,6 +139,7 @@ textarea {
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: all 0.3s ease;
 }
 
 .sticky-nav-content {
@@ -146,12 +149,6 @@ textarea {
     display: flex;
     align-items: center;
     gap: 15px;
-    transition: all 0.3s ease;
-}
-
-.nav-btns { 
-    display: flex; 
-    gap: 10px; 
 }
 
 .nav-logo {
@@ -160,48 +157,60 @@ textarea {
     transition: height 0.3s ease;
 }
 
+.nav-btns { 
+    display: flex; 
+    gap: 10px; 
+}
+
+/* --- STICKY NAV STATE --- */
 .search-wrapper.sticky {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 2500;
-    max-width: 100%;
-    width: 100%;
+    width: 100% !important; 
+    max-width: 100% !important;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
     background: var(--nav-bg);
-    padding: 10px 0;
     border-bottom: 1px solid var(--search-border);
-    justify-content: center;
+    z-index: 2500;
+    padding: 0 20px;
+    box-sizing: border-box;
     animation: slideDown .4s ease-out;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .search-wrapper.sticky .sticky-nav-content {
-    position: relative;
-    top: 0;
-    left: 0;
-    max-width: 584px;
-    width: 90%;
-    margin: 0 auto 8px auto;
-    justify-content: space-between;
-    gap: 0;
+    position: absolute; 
+    left: 20px; 
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.search-wrapper.sticky .search-box {
+    width: 584px; 
+    margin: 0; 
 }
 
 .search-wrapper.sticky .nav-logo {
-    height: 30px; 
+    height: 32px; 
 }
 
 .search-wrapper.sticky .filter-bar {
     display: none;
 }
 
-body.modal-open .search-wrapper.sticky {
-    display: none !important;
-}
-
 @keyframes slideDown {
     from { transform: translateY(-100%) }
     to { transform: translateY(0) }
+}
+
+@media (max-width: 480px) {
+    .search-wrapper.sticky .nav-logo {
+        display: none;
+    }
 }
 
 /* --- ADMIN FORM --- */
