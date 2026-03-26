@@ -182,30 +182,38 @@ textarea {
     padding: 10px 20px;
     border-bottom: 1px solid var(--search-border);
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    display: flex;
+    
+    display: grid;
+    grid-template-columns: 1fr auto 1fr; 
     align-items: center;
-    justify-content: center; 
+    
     animation: slideDown .4s ease-out;
     box-sizing: border-box;
 }
 
 .search-wrapper.sticky .sticky-nav-content {
-    position: absolute;
-    left: 20px;
+    position: static; 
+    grid-column: 1; 
     display: flex;
     align-items: center;
     gap: 15px;
     margin: 0;
+    transform: none;
+}
+
+.search-wrapper.sticky .search-box {
+    grid-column: 2;
+    width: 584px; 
+    margin: 0;
+}
+/
+.search-wrapper.sticky::after {
+    content: "";
+    grid-column: 3;
 }
 
 .search-wrapper.sticky .nav-logo {
     height: 32px; 
-}
-
-.search-wrapper.sticky .search-box {
-    width: 100%;
-    max-width: 584px;
-    margin: 0 auto;
 }
 
 .search-wrapper.sticky .filter-bar {
