@@ -15,7 +15,15 @@ async function init() {
 async function fetchDocuments() {
     const { data, error } = await _supabase.from('documents').select('*');
     if (error) return console.error('Fetch Error:', error.message);
-    documents = data;
+    documents = data.sort((a, b) => {
+        const isAGeneral = a.category?.toLowerCase() === 'general';
+        const isBGeneral = b.category?.toLowerCase() === 'general';
+
+        if (isAGeneral && !isBGeneral) return -1;
+        if (!isAGeneral && isBGeneral) return 1;
+        return 0;
+    });
+
     searchDocs();
 }
 
