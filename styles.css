@@ -176,6 +176,7 @@ textarea {
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
+/* Container adjustment for sticky state */
 .search-wrapper.sticky .sticky-nav-content {
     position: relative;
     top: 0;
@@ -183,20 +184,37 @@ textarea {
     max-width: 584px;
     width: 90%;
     margin: 0 auto 8px auto;
-    justify-content: space-between;
-    gap: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; 
+    gap: 20px;
 }
 
 .search-wrapper.sticky .nav-logo {
-    height: 30px; 
+    height: 30px;
+    order: 1; 
 }
 
-.search-wrapper.sticky .filter-bar {
-    display: none;
+.search-wrapper.sticky .nav-btns {
+    order: 2;
+    display: flex;
+    gap: 8px;
 }
 
 body.modal-open .search-wrapper.sticky {
     display: none !important;
+}
+
+.search-wrapper.sticky {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media (max-width: 480px) {
+    .search-wrapper.sticky .nav-logo {
+        display: none;
+    }
 }
 
 @keyframes slideDown {
