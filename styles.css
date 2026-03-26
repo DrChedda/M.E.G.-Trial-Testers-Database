@@ -130,6 +130,7 @@ textarea {
     border-color: var(--accent-purple);
     background: var(--bg-color);
 }
+
 .search-wrapper {
     width: 90%;
     max-width: 584px;
@@ -137,6 +138,7 @@ textarea {
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: all 0.3s ease;
 }
 
 .sticky-nav-content {
@@ -149,15 +151,24 @@ textarea {
     transition: all 0.3s ease;
 }
 
-.nav-btns { 
-    display: flex; 
-    gap: 10px; 
-}
-
 .nav-logo {
     height: 45px;
     width: auto;
     transition: height 0.3s ease;
+}
+
+.sticky-nav-content {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-btns { 
+    display: flex; 
+    gap: 10px; 
 }
 
 .search-wrapper.sticky {
@@ -169,46 +180,35 @@ textarea {
     max-width: 100%;
     width: 100%;
     background: var(--nav-bg);
-    padding: 10px 0;
+    padding: 10px 20px;
     border-bottom: 1px solid var(--search-border);
-    justify-content: center;
-    animation: slideDown .4s ease-out;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    
+    flex-direction: row; 
+    justify-content: flex-start;
+    animation: slideDown .4s ease-out;
+    box-sizing: border-box;
 }
 
-/* Container adjustment for sticky state */
 .search-wrapper.sticky .sticky-nav-content {
-    position: relative;
-    top: 0;
-    left: 0;
-    max-width: 584px;
-    width: 90%;
-    margin: 0 auto 8px auto;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start; 
-    gap: 20px;
+    position: static;
+    margin: 0;
+    gap: 15px;
+    flex-shrink: 0;
 }
 
 .search-wrapper.sticky .nav-logo {
-    height: 30px;
-    order: 1; 
+    height: 32px; 
 }
 
-.search-wrapper.sticky .nav-btns {
-    order: 2;
-    display: flex;
-    gap: 8px;
+.search-wrapper.sticky .search-box {
+    margin-left: 20px;
+    flex-grow: 1;
+    max-width: 700px;
 }
 
-body.modal-open .search-wrapper.sticky {
-    display: none !important;
-}
-
-.search-wrapper.sticky {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.search-wrapper.sticky .filter-bar {
+    display: none;
 }
 
 @media (max-width: 480px) {
