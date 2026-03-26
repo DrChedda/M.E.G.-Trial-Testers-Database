@@ -131,6 +131,7 @@ textarea {
     background: var(--bg-color);
 }
 
+/* --- SEARCH WRAPPER (HERO STATE) --- */
 .search-wrapper {
     width: 90%;
     max-width: 584px;
@@ -148,7 +149,6 @@ textarea {
     display: flex;
     align-items: center;
     gap: 15px;
-    transition: all 0.3s ease;
 }
 
 .nav-logo {
@@ -157,59 +157,41 @@ textarea {
     transition: height 0.3s ease;
 }
 
-.sticky-nav-content {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
 .nav-btns { 
     display: flex; 
     gap: 10px; 
 }
 
+/* --- STICKY NAV STATE --- */
 .search-wrapper.sticky {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 2500;
-    width: 100%;
-    background: var(--nav-bg);
-    padding: 10px 20px;
-    border-bottom: 1px solid var(--search-border);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    
-    display: grid;
-    grid-template-columns: 1fr auto 1fr; 
+    width: 100% !important; 
+    max-width: 100% !important;
+    height: 65px;
+    display: flex;
     align-items: center;
-    
-    animation: slideDown .4s ease-out;
+    justify-content: center; 
+    background: var(--nav-bg);
+    border-bottom: 1px solid var(--search-border);
+    z-index: 2500;
+    padding: 0 20px;
     box-sizing: border-box;
+    animation: slideDown .4s ease-out;
 }
 
 .search-wrapper.sticky .sticky-nav-content {
-    position: static; 
-    grid-column: 1; 
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin: 0;
-    transform: none;
+    position: absolute; 
+    left: 20px; 
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .search-wrapper.sticky .search-box {
-    grid-column: 2;
     width: 584px; 
-    margin: 0;
-}
-/
-.search-wrapper.sticky::after {
-    content: "";
-    grid-column: 3;
+    margin: 0; 
 }
 
 .search-wrapper.sticky .nav-logo {
@@ -220,15 +202,15 @@ textarea {
     display: none;
 }
 
+@keyframes slideDown {
+    from { transform: translateY(-100%) }
+    to { transform: translateY(0) }
+}
+
 @media (max-width: 480px) {
     .search-wrapper.sticky .nav-logo {
         display: none;
     }
-}
-
-@keyframes slideDown {
-    from { transform: translateY(-100%) }
-    to { transform: translateY(0) }
 }
 
 /* --- ADMIN FORM --- */
