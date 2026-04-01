@@ -318,7 +318,7 @@ textarea {
     align-items: center;
 }
 
-#viewerModal { z-index: 2000; }
+#viewerModal { z-index: 3000; }
 #passcodePromptModal { z-index: 4000; }
 
 .modal-content {
