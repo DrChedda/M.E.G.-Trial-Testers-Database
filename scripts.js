@@ -172,13 +172,23 @@ async function openViewer(id, title) {
 
 function openInNewTab() {
     const iframe = document.getElementById('docIframe');
-    const cleanUrl = iframe.src.replace('/preview', '/view');
-    window.open(cleanUrl, '_blank');
+    if (iframe && iframe.src !== 'about:blank' && iframe.src !== '') {
+        const cleanUrl = iframe.src.replace('/preview', '/view');
+        window.open(cleanUrl, '_blank');
+    }
 }
 
 function closeViewer() {
-    document.getElementById('viewerModal').style.display = 'none';
-    document.getElementById('docIframe').src = '';
+    const modal = document.getElementById('viewerModal');
+    const iframe = document.getElementById('docIframe');
+    
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    if (iframe) {
+        iframe.src = 'about:blank'; 
+    }
+
     document.body.classList.remove('modal-open');
     document.body.style.overflow = 'auto';
 }
