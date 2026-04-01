@@ -14,20 +14,6 @@
     <link rel="icon" type="image/png" href="favicon.png">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="scripts.js"></script>
-    <style>
-        .top-nav {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 15px;
-            padding: 10px 20px;
-        }
-        .nav-logo {
-            height: 45px;
-            width: auto;
-            object-fit: contain;
-        }
-    </style>
 </head>
 <body data-theme="light">
 
@@ -38,8 +24,15 @@
         <div class="sticky-nav-content">
             <img src="favicon.png" alt="M.E.G. Logo" class="nav-logo">
             <div class="nav-btns">
-                <button class="theme-toggle" onclick="toggleTheme()">Theme</button>
-                <button class="theme-toggle" onclick="openAdmin()">Manage</button>
+                <div class="dropdown">
+                    <button class="options-btn" id="optionsBtn" onclick="toggleDropdown()">Options ▾</button>
+                    <div id="optionsDropdown" class="dropdown-content">
+                        <a href="javascript:void(0)" onclick="toggleTheme()">Toggle Theme</a>
+                        <a href="javascript:void(0)" onclick="openUpdateLog()">Update Log</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="javascript:void(0)" onclick="openAdmin()">Manage Database</a>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -57,15 +50,15 @@
     </div>
 </div>
 
-<div id="adminModal" class="viewer-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:var(--overlay); z-index:3000; justify-content:center; align-items:center;">
-    <div class="modal-content" style="max-width:500px; height:auto; padding:20px;">
+<div id="adminModal" class="viewer-modal" style="display:none;">
+    <div class="modal-content admin-box">
         <div class="modal-header">
-            <span style="font-weight: 500;">Administrative Control</span>
+            <span>Administrative Control</span>
             <button class="close-btn" onclick="closeAdmin()">X</button>
         </div>
         
-        <form id="adminForm" style="display:flex; flex-direction:column; gap:10px; margin-top:20px;">
-            <div style="font-size: 14px; font-weight: 500; color: var(--text-dim);">Add New Entry</div>
+        <form id="adminForm">
+            <div class="form-section-label">Add New Entry</div>
             <input type="text" id="newTitle" placeholder="Document Title" required>
             <input type="text" id="newDesc" placeholder="Description">
             <input type="text" id="newUrl" placeholder="Google Link (URL)" required>
@@ -83,32 +76,54 @@
             </select>
             <select id="newAccess">
                 <option value="Public">Public (No Password)</option>
-                <option value="AC-1">AC-1 (FW+)</option>
+                <option value="AC-1">AC-1 (AP+)</option>
+                <option value="AC-2">AC-2 (FW+)</option>
                 <option value="AC-V">AC-V (NCO+)</option>
                 <option value="AC-X">AC-X (MIDCOM+)</option>
             </select>
-            <button type="button" class="theme-toggle" style="background:var(--accent-purple); color:white; margin-bottom: 10px;" onclick="submitDocument()">Upload to Database</button>
+            <button type="button" class="action-btn upload-btn" onclick="submitDocument()">Upload to Database</button>
         </form>
 
-        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--border);">
+        <div class="divider"></div>
 
-        <div style="font-size: 14px; font-weight: 500; color: var(--text-dim); margin-bottom: 10px;">Modify Existing Record</div>
-        <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div class="form-section-label">Modify Existing Record</div>
+        <div class="modify-controls">
             <input type="text" id="targetUuid" placeholder="Enter Document UUID">
-            <div style="display: flex; gap: 10px;">
-                <button type="button" class="theme-toggle" style="flex:1; background:var(--accent-blue);" onclick="adminEditByUuid()">Load for Edit</button>
-                <button type="button" class="theme-toggle" style="flex:1; background:#ff4444; color:white;" onclick="adminDeleteByUuid()">Delete Record</button>
+            <div class="admin-action-row">
+                <button type="button" class="action-btn load-btn" onclick="adminEditByUuid()">Load for Edit</button>
+                <button type="button" class="action-btn delete-btn" onclick="adminDeleteByUuid()">Delete Record</button>
             </div>
         </div>
     </div>
 </div>
 
-<div id="viewerModal">
+<div id="logModal" class="viewer-modal" style="display:none;">
+    <div class="modal-content log-box">
+        <div class="modal-header">
+            <span>System Update Log</span>
+            <button class="close-btn" onclick="closeUpdateLog()">X</button>
+        </div>
+        <div class="log-body">
+            <div class="log-item">
+                <div class="log-version">v26.4.1</div>
+                <div class="log-date">April 1, 2026</div>
+                <ul class="log-list">
+                    <li>Consolidated UI: Navigation moved to integrated Options menu.</li>
+                    <li>Implemented Hybrid Versioning System (Year.Month.Patch).</li>
+                    <li>Added public-facing Update Log for transparency.</li>
+                    <li>Fixed minor UI flickering during database fetch.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="viewerModal" style="display:none;">
     <div class="modal-content">
         <div class="modal-header">
-            <span id="modalTitle" style="font-weight: 500;">Document Viewer</span>
+            <span id="modalTitle">Document Viewer</span>
             <div class="modal-actions">
-                <button class="open-new-tab-btn" onclick="openInNewTab()">Open in New Tab</button>
+                <button class="open-tab-btn" onclick="openInNewTab()">Open in New Tab</button>
                 <button class="close-btn" onclick="closeViewer()">Close</button>
             </div>
         </div>
@@ -116,16 +131,14 @@
     </div>
 </div>
 
-<div id="passcodePromptModal">
-    <div class="modal-content">
-        <div class="modal-header" style="margin: -24px -24px 20px -24px; border-radius: 8px 8px 0 0;">
-            <span style="font-weight: 500;">Security Clearance</span>
+<div id="passcodePromptModal" style="display:none;">
+    <div class="modal-content passcode-box">
+        <div class="modal-header">
+            <span>Security Clearance</span>
             <button class="close-btn" onclick="cancelPasscode()">X</button>
         </div>
-        <h3 style="margin: 0 0 10px 0; color: var(--text-main);">Access Restricted</h3>
-        <p id="passcodeReqLevel" style="color: var(--text-dim); font-size: 14px; margin-bottom: 20px;">
-            Please enter the required authorization code.
-        </p>
+        <h3>Access Restricted</h3>
+        <p id="passcodeReqLevel">Authorization Required</p>
         <input type="password" id="passcodeInput" placeholder="Enter Access Code">
         <div class="passcode-btns">
             <button class="btn-cancel" onclick="cancelPasscode()">Cancel</button>
@@ -133,10 +146,11 @@
             <button class="btn-help" onclick="togglePasscodeHelp()">?</button>
         </div>
         <div id="passcodeHelpText" style="display: none;">
-            <strong style="color: var(--text-main);">Rank Explanations:</strong>
-            <ul style="margin: 8px 0 0 18px; padding: 0; color: var(--text-dim);">
+            <strong>Rank Explanations:</strong>
+            <ul>
                 <li><strong>Public:</strong> No clearance required.</li>
-                <li><strong>AC-1:</strong> Fieldworker and above.</li>
+                <li><strong>AC-1:</strong> AP (Apprentice) and above.</li>
+                <li><strong>AC-2:</strong> FW (Fieldworker) and above.</li>
                 <li><strong>AC-V:</strong> NCO (Trial Lead) and above.</li>
                 <li><strong>AC-X:</strong> MIDCOM (Research Secretary) and above.</li>
             </ul>
@@ -145,6 +159,13 @@
 </div>
 
 <main class="results-container" id="results"></main>
+
+<footer class="site-footer">
+    <div class="footer-content">
+        M.E.G. Database System | 
+        <span class="version-tag" onclick="openUpdateLog()">v26.4.1</span>
+    </div>
+</footer>
 
 </body>
 </html>
