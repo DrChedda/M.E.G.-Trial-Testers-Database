@@ -15,15 +15,7 @@ async function init() {
 async function fetchDocuments() {
     const { data, error } = await _supabase.from('documents').select('*');
     if (error) return console.error('Fetch Error:', error.message);
-    documents = data.sort((a, b) => {
-        const isAGeneral = a.category?.toLowerCase() === 'general';
-        const isBGeneral = b.category?.toLowerCase() === 'general';
-
-        if (isAGeneral && !isBGeneral) return -1;
-        if (!isAGeneral && isBGeneral) return 1;
-        return 0;
-    });
-
+    documents = data;
     searchDocs();
 }
 
@@ -72,6 +64,16 @@ function requestAccessCode(clearanceLevel, savedPass) {
         
         passcodePromiseResolve = resolve;
     });
+}
+
+function openUpdateLog() {
+    document.getElementById('logModal').style.display = 'flex';
+    document.body.classList.add('modal-open');
+}
+
+function closeUpdateLog() {
+    document.getElementById('logModal').style.display = 'none';
+    document.body.classList.remove('modal-open');
 }
 
 function submitPasscode() {
@@ -172,23 +174,13 @@ async function openViewer(id, title) {
 
 function openInNewTab() {
     const iframe = document.getElementById('docIframe');
-    if (iframe && iframe.src !== 'about:blank' && iframe.src !== '') {
-        const cleanUrl = iframe.src.replace('/preview', '/view');
-        window.open(cleanUrl, '_blank');
-    }
+    const cleanUrl = iframe.src.replace('/preview', '/view');
+    window.open(cleanUrl, '_blank');
 }
 
 function closeViewer() {
-    const modal = document.getElementById('viewerModal');
-    const iframe = document.getElementById('docIframe');
-    
-    if (modal) {
-        modal.style.display = 'none';
-    }
-    if (iframe) {
-        iframe.src = 'about:blank'; 
-    }
-
+    document.getElementById('viewerModal').style.display = 'none';
+    document.getElementById('docIframe').src = '';
     document.body.classList.remove('modal-open');
     document.body.style.overflow = 'auto';
 }
@@ -196,6 +188,8 @@ function closeViewer() {
 // --- ADMIN LOGIC ---
 
 async function openAdmin() {
+    closeUpdateLog();
+    
     const passcode = prompt("Enter AC-X Passcode:", localStorage.getItem('admin_passcode') || '');
     if (!passcode) return;
 
@@ -318,9 +312,28 @@ function initTheme() {
 }
 
 function toggleTheme() {
-    const next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    const currentTheme = document.body.getAttribute('data-theme');
+    const next = currentTheme === 'dark' ? 'light' : 'dark';
     document.body.setAttribute('data-theme', next);
     localStorage.setItem('meg-theme', next);
+}
+
+// Dropdown Toggle
+function toggleDropdown() {
+    document.getElementById("optionsDropdown").classList.toggle("show");
+}
+
+// Close dropdown if user clicks outside
+window.onclick = function(event) {
+    if (!event.target.matches('.options-btn')) {
+        const dropdowns = document.getElementsByClassName("dropdown-content");
+        for (let i = 0; i < dropdowns.length; i++) {
+            let openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
 }
 
 window.onscroll = () => {
