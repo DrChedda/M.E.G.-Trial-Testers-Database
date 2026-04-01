@@ -66,6 +66,16 @@ function requestAccessCode(clearanceLevel, savedPass) {
     });
 }
 
+function openUpdateLog() {
+    document.getElementById('logModal').style.display = 'flex';
+    document.body.classList.add('modal-open');
+}
+
+function closeUpdateLog() {
+    document.getElementById('logModal').style.display = 'none';
+    document.body.classList.remove('modal-open');
+}
+
 function submitPasscode() {
     const code = document.getElementById('passcodeInput').value;
     document.getElementById('passcodePromptModal').style.display = 'none';
@@ -178,6 +188,8 @@ function closeViewer() {
 // --- ADMIN LOGIC ---
 
 async function openAdmin() {
+    closeUpdateLog();
+    
     const passcode = prompt("Enter AC-X Passcode:", localStorage.getItem('admin_passcode') || '');
     if (!passcode) return;
 
@@ -300,9 +312,28 @@ function initTheme() {
 }
 
 function toggleTheme() {
-    const next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    const currentTheme = document.body.getAttribute('data-theme');
+    const next = currentTheme === 'dark' ? 'light' : 'dark';
     document.body.setAttribute('data-theme', next);
     localStorage.setItem('meg-theme', next);
+}
+
+// Dropdown Toggle
+function toggleDropdown() {
+    document.getElementById("optionsDropdown").classList.toggle("show");
+}
+
+// Close dropdown if user clicks outside
+window.onclick = function(event) {
+    if (!event.target.matches('.options-btn')) {
+        const dropdowns = document.getElementsByClassName("dropdown-content");
+        for (let i = 0; i < dropdowns.length; i++) {
+            let openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
 }
 
 window.onscroll = () => {
