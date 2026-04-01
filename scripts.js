@@ -19,6 +19,12 @@ async function fetchDocuments() {
     searchDocs();
 }
 
+// --- SORTING PRIORITIES ---
+
+const CATEGORY_ORDER = { 'General': 1, 'Research': 2, 'Theory': 3, 'Other': 4 };
+const TYPE_ORDER = { 'doc': 1, 'sheet': 2, 'slide': 3, 'other': 4 };
+const ACCESS_ORDER = { 'Public': 1, 'AC-1': 2, 'AC-2': 3, 'AC-V': 4, 'AC-X': 5 };
+
 // --- SEARCH & PAGINATION ---
 
 function searchDocs() {
@@ -26,10 +32,27 @@ function searchDocs() {
     const resultsArea = document.getElementById('results');
     if (!resultsArea) return;
 
-    const filtered = documents.filter(doc => {
-        const matchesSearch = doc.title.toLowerCase().includes(query) || (doc.description?.toLowerCase().includes(query));
+    let filtered = documents.filter(doc => {
+        const matchesSearch = doc.title.toLowerCase().includes(query) || 
+                             (doc.description?.toLowerCase().includes(query));
         const matchesCategory = currentCategory === 'All' || doc.category === currentCategory;
         return matchesSearch && matchesCategory;
+    });
+
+    filtered.sort((a, b) => {
+        const catA = CATEGORY_ORDER[a.category] || 99;
+        const catB = CATEGORY_ORDER[b.category] || 99;
+        if (catA !== catB) return catA - catB;
+
+        const typeA = TYPE_ORDER[a.type] || 99;
+        const typeB = TYPE_ORDER[b.type] || 99;
+        if (typeA !== typeB) return typeA - typeB;
+
+        const accA = ACCESS_ORDER[a.access_required] || 99;
+        const accB = ACCESS_ORDER[b.access_required] || 99;
+        if (accA !== accB) return accA - accB;
+
+        return a.title.localeCompare(b.title);
     });
 
     const totalPages = Math.ceil(filtered.length / itemsPerPage);
@@ -318,12 +341,10 @@ function toggleTheme() {
     localStorage.setItem('meg-theme', next);
 }
 
-// Dropdown Toggle
 function toggleDropdown() {
     document.getElementById("optionsDropdown").classList.toggle("show");
 }
 
-// Close dropdown if user clicks outside
 window.onclick = function(event) {
     if (!event.target.matches('.options-btn')) {
         const dropdowns = document.getElementsByClassName("dropdown-content");
