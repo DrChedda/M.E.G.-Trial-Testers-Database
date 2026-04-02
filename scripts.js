@@ -84,7 +84,7 @@ function requestAccessCode(clearanceLevel, savedPass) {
         document.getElementById('passcodeInput').value = savedPass || '';
         document.getElementById('passcodeHelpText').style.display = 'none';
         document.getElementById('passcodePromptModal').style.display = 'flex';
-        document.body.classList.add('modal-open');
+        lockScroll();
         
         passcodePromiseResolve = resolve;
     });
@@ -92,24 +92,24 @@ function requestAccessCode(clearanceLevel, savedPass) {
 
 function openUpdateLog() {
     document.getElementById('logModal').style.display = 'flex';
-    document.body.classList.add('modal-open');
+    lockScroll();
 }
 
 function closeUpdateLog() {
     document.getElementById('logModal').style.display = 'none';
-    document.body.classList.remove('modal-open');
+    unlockScroll();
 }
 
 function submitPasscode() {
     const code = document.getElementById('passcodeInput').value;
     document.getElementById('passcodePromptModal').style.display = 'none';
-    document.body.classList.remove('modal-open');
+    unlockScroll();
     if (passcodePromiseResolve) passcodePromiseResolve(code);
 }
 
 function cancelPasscode() {
     document.getElementById('passcodePromptModal').style.display = 'none';
-    document.body.classList.remove('modal-open');
+    unlockScroll();
     if (passcodePromiseResolve) passcodePromiseResolve(null);
 }
 
@@ -173,7 +173,7 @@ async function openViewer(id, title) {
         });
         
         if (error || !data) {
-            document.body.classList.remove('modal-open');
+            unlockScroll();
             return alert("ACCESS DENIED: Insufficient clearance level or invalid code.");
         }
         
@@ -193,7 +193,7 @@ async function openViewer(id, title) {
             ? securedUrl.split('/edit')[0] + '/preview' 
             : securedUrl;
         modal.style.display = 'flex';
-        document.body.classList.add('modal-open');
+        lockScroll();
     }
 }
 
@@ -206,7 +206,7 @@ function openInNewTab() {
 function closeViewer() {
     document.getElementById('viewerModal').style.display = 'none';
     document.getElementById('docIframe').src = '';
-    document.body.classList.remove('modal-open');
+    unlockScroll();
 }
 
 // --- ADMIN LOGIC ---
@@ -223,12 +223,12 @@ async function openAdmin() {
     localStorage.setItem('admin_passcode', passcode);
     window.adminKey = passcode;
     document.getElementById('adminModal').style.display = 'flex';
-    document.body.classList.add('modal-open');
+    lockScroll();
 }
 
 function closeAdmin() {
     document.getElementById('adminModal').style.display = 'none';
-    document.body.classList.remove('modal-open');
+    unlockScroll();
     resetAdminForm();
 }
 
@@ -384,5 +384,18 @@ window.onscroll = () => {
         sw.classList.toggle("sticky", isSticky);
     }
 };
+
+function lockScroll() {
+    const scrollY = window.scrollY;
+    document.body.style.setProperty('--scroll-y', `-${scrollY}px`);
+    document.body.classList.add('modal-open');
+}
+
+function unlockScroll() {
+    const scrollY = document.body.style.getPropertyValue('--scroll-y');
+    document.body.classList.remove('modal-open');
+    document.body.style.setProperty('--scroll-y', '');
+    window.scrollTo(0, parseInt(scrollY || '0') * -1);
+}
 
 document.addEventListener('DOMContentLoaded', init);
