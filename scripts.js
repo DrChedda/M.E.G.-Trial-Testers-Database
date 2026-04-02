@@ -90,14 +90,20 @@ function requestAccessCode(clearanceLevel, savedPass) {
     });
 }
 
-function openOptionsMenu() {
-    document.getElementById('optionsModal').style.display = 'flex';
-    lockScroll();
+function openUpdateLog() {
+    const logModal = document.getElementById('logModal');
+    if (logModal) {
+        logModal.style.display = 'flex';
+        lockScroll();
+    }
 }
 
-function closeOptionsMenu() {
-    document.getElementById('optionsModal').style.display = 'none';
-    unlockScroll();
+function closeUpdateLog() {
+    const logModal = document.getElementById('logModal');
+    if (logModal) {
+        logModal.style.display = 'none';
+        unlockScroll();
+    }
 }
 
 function submitPasscode() {
@@ -212,9 +218,9 @@ function closeViewer() {
 // --- ADMIN LOGIC ---
 
 async function openAdmin() {
-    // If the options menu is open, we close it and unlock scroll first to reset state
-    if (document.getElementById('optionsModal').style.display === 'flex') {
-        closeOptionsMenu();
+    const dropdown = document.getElementById("optionsDropdown");
+    if (dropdown && dropdown.classList.contains('show')) {
+        dropdown.classList.remove('show');
     }
     
     const passcode = prompt("Enter AC-X Passcode:", localStorage.getItem('admin_passcode') || '');
@@ -364,11 +370,14 @@ function initLogoSpin() {
 }
 
 function toggleDropdown() {
-    document.getElementById("optionsDropdown").classList.toggle("show");
+    const dropdown = document.getElementById("systemDropdown");
+    if (dropdown) {
+        dropdown.classList.toggle("show");
+    }
 }
 
 window.onclick = function(event) {
-    if (!event.target.matches('.options-btn')) {
+    if (!event.target.matches('.menu-btn')) {
         const dropdowns = document.getElementsByClassName("dropdown-content");
         for (let i = 0; i < dropdowns.length; i++) {
             let openDropdown = dropdowns[i];
