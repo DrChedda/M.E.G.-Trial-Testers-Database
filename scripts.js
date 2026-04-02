@@ -343,14 +343,19 @@ function toggleTheme() {
 }
 
 function initLogoSpin() {
+    let isspinning = false;
     const logo = document.querySelector('.nav-logo');
     if (logo) {
         logo.style.cursor = 'pointer';
         logo.addEventListener('click', () => {
-            logo.classList.add('spinning');
-            setTimeout(() => {
-                logo.classList.remove('spinning');
-            }, 600); 
+            if (!isspinning) {
+                isspinning = true;
+                logo.classList.add('spinning');
+                setTimeout(() => {
+                    logo.classList.remove('spinning');
+                    isspinning = false;
+                }, 600);
+            }
         });
     }
 }
