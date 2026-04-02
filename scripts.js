@@ -212,18 +212,25 @@ function closeViewer() {
 // --- ADMIN LOGIC ---
 
 async function openAdmin() {
-    closeUpdateLog();
-    
+    closeUpdateLog(); 
     const passcode = prompt("Enter AC-X Passcode:", localStorage.getItem('admin_passcode') || '');
+    
     if (!passcode) return;
-
     const { data: isAdmin } = await _supabase.rpc('verify_admin', { passcode });
-    if (!isAdmin) return alert("Invalid Credentials.");
+
+    if (!isAdmin) {
+        alert("Invalid Credentials.");
+        return;
+    }
 
     localStorage.setItem('admin_passcode', passcode);
     window.adminKey = passcode;
-    document.getElementById('adminModal').style.display = 'flex';
-    lockScroll();
+    
+    const adminModal = document.getElementById('adminModal');
+    if (adminModal) {
+        adminModal.style.display = 'flex';
+        lockScroll();
+    }
 }
 
 function closeAdmin() {
