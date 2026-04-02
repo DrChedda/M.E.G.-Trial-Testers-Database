@@ -90,13 +90,13 @@ function requestAccessCode(clearanceLevel, savedPass) {
     });
 }
 
-function openOptionsMenu() {
-    document.getElementById('optionsModal').style.display = 'flex';
+function openUpdateLog() {
+    document.getElementById('logModal').style.display = 'flex';
     lockScroll();
 }
 
-function closeOptionsMenu() {
-    document.getElementById('optionsModal').style.display = 'none';
+function closeUpdateLog() {
+    document.getElementById('logModal').style.display = 'none';
     unlockScroll();
 }
 
@@ -212,10 +212,7 @@ function closeViewer() {
 // --- ADMIN LOGIC ---
 
 async function openAdmin() {
-    // If the options menu is open, we close it and unlock scroll first to reset state
-    if (document.getElementById('optionsModal').style.display === 'flex') {
-        closeOptionsMenu();
-    }
+    closeUpdateLog();
     
     const passcode = prompt("Enter AC-X Passcode:", localStorage.getItem('admin_passcode') || '');
     if (!passcode) return;
