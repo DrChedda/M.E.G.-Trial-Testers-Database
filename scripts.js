@@ -9,6 +9,7 @@ const itemsPerPage = 10;
 
 async function init() {
     initTheme();
+    initLogoSpin();
     await fetchDocuments();
 }
 
@@ -203,12 +204,9 @@ function openInNewTab() {
 }
 
 function closeViewer() {
-    const modal = document.getElementById('viewerModal');
-    modal.style.display = 'none';
+    document.getElementById('viewerModal').style.display = 'none';
     document.getElementById('docIframe').src = '';
     document.body.classList.remove('modal-open');
-    document.body.style.position = ''; 
-    document.body.style.width = '';
 }
 
 // --- ADMIN LOGIC ---
@@ -342,6 +340,24 @@ function toggleTheme() {
     const next = currentTheme === 'dark' ? 'light' : 'dark';
     document.body.setAttribute('data-theme', next);
     localStorage.setItem('meg-theme', next);
+}
+
+function initLogoSpin() {
+    let isspinning = false;
+    const logo = document.querySelector('.nav-logo');
+    if (logo) {
+        logo.style.cursor = 'pointer';
+        logo.addEventListener('click', () => {
+            if (!isspinning) {
+                isspinning = true;
+                logo.classList.add('spinning');
+                setTimeout(() => {
+                    logo.classList.remove('spinning');
+                    isspinning = false;
+                }, 600);
+            }
+        });
+    }
 }
 
 function toggleDropdown() {
