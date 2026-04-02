@@ -89,6 +89,25 @@ body.modal-open {
     font-weight: 500;
 }
 
+/* --- LOGO SPIN ANIMATION --- */
+@keyframes logo-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.spinning {
+    animation: logo-spin 0.6s ease-in-out;
+}
+
+.nav-logo {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.nav-logo:hover {
+    opacity: 0.8;
+}
+
 /* --- NAV & SEARCH WRAPPER LOGIC --- */
 
 .search-box {
