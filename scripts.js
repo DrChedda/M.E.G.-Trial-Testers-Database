@@ -45,13 +45,13 @@ function searchDocs() {
         const catB = CATEGORY_ORDER[b.category] || 99;
         if (catA !== catB) return catA - catB;
 
-        const typeA = TYPE_ORDER[a.type] || 99;
-        const typeB = TYPE_ORDER[b.type] || 99;
-        if (typeA !== typeB) return typeA - typeB;
-
         const accA = ACCESS_ORDER[a.access_required] || 99;
         const accB = ACCESS_ORDER[b.access_required] || 99;
         if (accA !== accB) return accA - accB;
+
+        const typeA = TYPE_ORDER[a.type] || 99;
+        const typeB = TYPE_ORDER[b.type] || 99;
+        if (typeA !== typeB) return typeA - typeB;
 
         return a.title.localeCompare(b.title);
     });
