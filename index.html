@@ -20,6 +20,15 @@ permalink: /main
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="{{ '/scripts.js' | relative_url }}"></script>
+
+    <style>
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
 </head>
 <body data-theme="light">
 
@@ -118,6 +127,7 @@ permalink: /main
                 <ul class="log-list">
                     <li>Fixed issue with the search bar clipping into options button.</li>
                     <li>Added Mobile Support (Hopefully)</li>
+                    <li>Disabled text selection on the entire page.</li>
                 </ul>
             </div>
             <div class="log-item">

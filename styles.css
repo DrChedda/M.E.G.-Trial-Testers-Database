@@ -433,7 +433,7 @@ textarea {
 
 .modal-content {
     width: 95vw;
-    height: 90vh;
+    height: 90dvh;
     max-width: 1400px;
     background: var(--bg-color);
     border-radius: var(--radius);
@@ -664,4 +664,10 @@ textarea {
 
 .version-tag:hover {
     opacity: 0.8;
+}
+
+body.modal-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
 }

@@ -172,6 +172,7 @@ async function openViewer(id, title) {
         });
         
         if (error || !data) {
+            document.body.classList.remove('modal-open');
             return alert("ACCESS DENIED: Insufficient clearance level or invalid code.");
         }
         
@@ -202,10 +203,12 @@ function openInNewTab() {
 }
 
 function closeViewer() {
-    document.getElementById('viewerModal').style.display = 'none';
+    const modal = document.getElementById('viewerModal');
+    modal.style.display = 'none';
     document.getElementById('docIframe').src = '';
     document.body.classList.remove('modal-open');
-    document.body.style.overflow = 'auto';
+    document.body.style.position = ''; 
+    document.body.style.width = '';
 }
 
 // --- ADMIN LOGIC ---
