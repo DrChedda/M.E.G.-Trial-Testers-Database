@@ -108,6 +108,23 @@ body.modal-open {
     opacity: 0.8;
 }
 
+a, 
+.title-link, 
+.issue-link {
+    color: var(--link-color) !important;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+a:visited {
+    color: var(--link-color) !important;
+}
+
+a:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
 /* --- NAV & SEARCH WRAPPER LOGIC --- */
 
 .search-box {
