@@ -1,6 +1,7 @@
-const SUPABASE_URL = 'https://zsmytsalkmtqlxflprnu.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_SD8kLVdtqkUpRMiUdwWBsQ_u0Gl0qOu';
-const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// const SUPABASE_URL = 'https://zsmytsalkmtqlxflprnu.supabase.co';
+// const SUPABASE_KEY = 'sb_publishable_SD8kLVdtqkUpRMiUdwWBsQ_u0Gl0qOu';
+// const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// Debug version doesn't connect to supabase
 
 let documents = [], currentCategory = 'All', currentPage = 1, editingDocId = null;
 const itemsPerPage = 10;
@@ -344,18 +345,17 @@ function resetAdminForm() {
 // Note: This doesn't work via file:// and requires a server environment due to CORS restrictions.
 
 async function loadSystemLogs() {
-    const logContainer = document.querySelector('.log-body');
+    const logContainer = document.getElementById('logBody');
     if (!logContainer) return;
 
     try {
         const response = await fetch('others/system.log');
-        if (!response.ok) throw new Error("Log file not found");
+        if (!response.ok) throw new Error("Log file not found (404)");
         
         const rawText = await response.text();
         const lines = rawText.split('\n').filter(line => line.trim() !== '');
         
         let htmlContent = '';
-
         lines.forEach(line => {
             const ver = line.match(/VER:\s*([^|]+)/)?.[1]?.trim() || "v0.0.0";
             const date = line.match(/DATE:\s*([^|]+)/)?.[1]?.trim() || "Unknown Date";
@@ -365,19 +365,22 @@ async function loadSystemLogs() {
             const listItemsHtml = dataItems.map(item => `<li>${item.trim()}</li>`).join('');
 
             htmlContent += `
-                <div class="log-item">
+                <div>
                     <div class="log-version">${ver}</div>
                     <div class="log-date">${date}</div>
-                    <ul class="log-list">
-                        ${listItemsHtml}
-                    </ul>
-                </div>
-            `;
+                    <ul class="log-list">${listItemsHtml}</ul>
+                </div>`;
         });
-
         logContainer.innerHTML = htmlContent;
     } catch (err) {
-        logContainer.innerHTML = `<div class="log-item"><div class="log-version">Error</div><div class="log-date">${err.message}</div></div>`;
+        logContainer.innerHTML = `
+            <div>
+                <div class="log-version">Error</div>
+                <div class="log-date">System Message</div>
+                <ul class="log-list">
+                    <li>${err.message}</li>
+                </ul>
+            </div>`;
     }
 }
 

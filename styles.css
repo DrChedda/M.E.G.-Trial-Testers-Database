@@ -677,6 +677,7 @@ textarea {
 }
 
 /* --- FOOTER --- */
+
 .site-footer {
     width: 100%;
     padding: 20px 0;
@@ -707,4 +708,51 @@ body.modal-open {
     position: fixed;
     width: 100%;
     top: var(--scroll-y); 
+}
+
+/* --- UPDATE LOG STYLES --- */
+
+.log-body {
+    padding: 20px;
+    background-color: var(--bg-color); 
+    max-height: 70dvh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px; 
+}
+
+.log-body > div {
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--search-bg);
+    box-sizing: border-box;
+}
+
+.log-version, .error-title {
+    color: var(--accent-purple);
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.log-date {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    display: block;
+}
+
+.log-list {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--text-main);
+}
+
+.log-list li {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 6px;
 }
