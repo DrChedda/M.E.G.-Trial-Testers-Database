@@ -366,7 +366,7 @@ async function loadSystemLogs() {
 
             htmlContent += `
                 <div class="log-item" style="margin-bottom: 25px;">
-                    <div class="log-version" style="font-size: 1.5rem; font-weight: 700; margin-bottom: 2px;">${ver}</div>
+                    <div class="log-version" style="font-size: 1.2rem; font-weight: 700; margin-bottom: 2px;">${ver}</div>
                     <div class="log-date" style="font-size: 0.9rem; margin-bottom: 10px;">${date}</div>
                     <ul class="log-list">
                         ${listItemsHtml}
