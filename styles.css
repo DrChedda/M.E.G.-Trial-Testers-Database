@@ -711,21 +711,17 @@ body.modal-open {
 }
 
 /* --- UPDATE LOG STYLES --- */
-/* --- UPDATE LOG STYLES --- */
 
 .log-box {
     max-width: 600px !important;
-    /* This ensures the modal doesn't feel "stretchy" */
     display: flex;
     flex-direction: column;
 }
 
 .log-body {
-    /* Set this to the SAME color as your standard background to hide the "box" */
     background-color: var(--bg-color); 
     max-height: 70dvh;
     overflow-y: auto;
-    /* Standardized padding: No extra padding at the bottom that causes gaps */
     padding: 20px;
     box-sizing: border-box;
 }
