@@ -718,7 +718,7 @@ body.modal-open {
 
 .log-body {
     padding: 20px 24px;
-    max-height: 70vh;
+    max-height: 70dvh;
     overflow-y: auto;
     background-color: var(--bg-color);
 }
