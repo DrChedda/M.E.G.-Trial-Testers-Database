@@ -118,25 +118,8 @@ permalink: /main
             <span>System Update Log</span>
             <button class="close-btn" onclick="closeUpdateLog()">X</button>
         </div>
-        <div class="log-body">
-            <div class="log-item">
-                <div class="log-version">v0.2.1</div>
-                <div class="log-date">April 1, 2026</div>
-                <ul class="log-list">
-                    <li>Fixed issue with the search bar clipping into options button.</li>
-                    <li>Added Mobile Support (Hopefully)</li>
-                    <li>Disabled text selection on the entire page.</li>
-                    <li>Added "Submit an issue here" link at the bottom of the page.</li>
-                </ul>
-            </div>
-            <div class="log-item">
-                <div class="log-version">v0.2.0</div>
-                <div class="log-date">April 1, 2026</div>
-                <ul class="log-list">
-                    <li>Consolidated UI: Navigation moved to integrated Options menu.</li>
-                    <li>Added public-facing Update Log for transparency.</li>
-                </ul>
-            </div>
+        <div class="log-body" id="logBody">
+            <div class="loading-text">Accessing system logs...</div>
         </div>
     </div>
 </div>
@@ -186,7 +169,7 @@ permalink: /main
 <footer class="site-footer">
     <div class="footer-content">
         Trial Testers Database System | 
-        <span class="version-tag" onclick="openUpdateLog()">v0.2.1</span>
+        <span class="version-tag" onclick="openUpdateLog()">v0.2.2</span>
         <div class="footer-issue-report">
             Found something wrong? 
             <a href="https://github.com/DrChedda/M.E.G.-Trial-Testers-Database/issues" target="_blank" rel="noopener noreferrer" class="issue-link">

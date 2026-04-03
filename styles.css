@@ -677,6 +677,7 @@ textarea {
 }
 
 /* --- FOOTER --- */
+
 .site-footer {
     width: 100%;
     padding: 20px 0;
@@ -708,3 +709,73 @@ body.modal-open {
     width: 100%;
     top: var(--scroll-y); 
 }
+
+/* --- UPDATE LOG STYLES --- */
+
+.log-box {
+    max-width: 600px !important;
+}
+
+.log-body {
+    padding: 20px 24px;
+    max-height: 70vh;
+    overflow-y: auto;
+    background-color: var(--bg-color);
+}
+
+.log-item {
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--search-bg);
+    font-family: 'Roboto Mono', monospace;
+}
+
+.log-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 5px;
+}
+
+.log-version {
+    color: var(--accent-purple);
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.log-date {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    font-weight: 500;
+}
+
+.log-data-text {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-main);
+    white-space: pre-wrap;
+}
+
+.log-internal-id {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    background: var(--border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.loading-text, .log-error {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+}
+.log-error { color: #ff4d4d; }
