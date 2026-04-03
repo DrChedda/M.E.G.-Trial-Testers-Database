@@ -345,8 +345,10 @@ function resetAdminForm() {
 
 async function loadSystemLogs() {
     const logContainer = document.querySelector('.log-body');
+    if (!logContainer) return;
+
     try {
-        const response = await fetch('others/system.log');
+        const response = await fetch('system.log');
         if (!response.ok) throw new Error("Log file not found");
         
         const rawText = await response.text();
@@ -363,9 +365,9 @@ async function loadSystemLogs() {
             const listItemsHtml = dataItems.map(item => `<li>${item.trim()}</li>`).join('');
 
             htmlContent += `
-                <div class="log-item">
-                    <div class="log-version">${ver}</div>
-                    <div class="log-date">${date}</div>
+                <div class="log-item" style="margin-bottom: 25px;">
+                    <div class="log-version" style="font-size: 1.5rem; font-weight: 700; margin-bottom: 2px;">${ver}</div>
+                    <div class="log-date" style="font-size: 0.9rem; margin-bottom: 10px;">${date}</div>
                     <ul class="log-list">
                         ${listItemsHtml}
                     </ul>
