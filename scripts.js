@@ -344,9 +344,11 @@ function resetAdminForm() {
 // Note: This doesn't work via file:// and requires a server environment due to CORS restrictions.
 
 async function loadSystemLogs() {
-    const logContainer = document.getElementById('logBody');
+    const logContainer = document.querySelector('.log-body');
+    if (!logContainer) return;
+
     try {
-        const response = await fetch('system.log');
+        const response = await fetch('others/system.log');
         if (!response.ok) throw new Error("Log file not found");
         
         const rawText = await response.text();
@@ -355,26 +357,27 @@ async function loadSystemLogs() {
         let htmlContent = '';
 
         lines.forEach(line => {
-            const ver = line.match(/VER:\s*([^|]+)/)?.[1]?.trim() || "---";
-            const date = line.match(/DATE:\s*([^|]+)/)?.[1]?.trim() || "---";
-            const data = line.match(/DATA:\s*([^|]+)/)?.[1]?.trim() || "";
-            const internal = line.match(/INTERNAL_ID:\s*([^|]+)/)?.[1]?.trim();
+            const ver = line.match(/VER:\s*([^|]+)/)?.[1]?.trim() || "v0.0.0";
+            const date = line.match(/DATE:\s*([^|]+)/)?.[1]?.trim() || "Unknown Date";
+            const dataString = line.match(/DATA:\s*([^|]+)/)?.[1]?.trim() || "";
+            
+            const dataItems = dataString.split(';').filter(item => item.trim() !== '');
+            const listItemsHtml = dataItems.map(item => `<li>${item.trim()}</li>`).join('');
 
             htmlContent += `
                 <div class="log-item">
-                    <div class="log-header-row">
-                        <span class="log-version">${ver}</span>
-                        <span class="log-date">${date}</span>
-                    </div>
-                    <div class="log-data-text">${data}</div>
-                    ${internal ? `<div class="log-internal-id">ID: ${internal}</div>` : ''}
+                    <div class="log-version">${ver}</div>
+                    <div class="log-date">${date}</div>
+                    <ul class="log-list">
+                        ${listItemsHtml}
+                    </ul>
                 </div>
             `;
         });
 
         logContainer.innerHTML = htmlContent;
     } catch (err) {
-        logContainer.innerHTML = `<div class="log-error">Failed to load logs: ${err.message}</div>`;
+        logContainer.innerHTML = `<div class="log-item"><div class="log-version">Error</div><div class="log-date">${err.message}</div></div>`;
     }
 }
 
