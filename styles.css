@@ -714,8 +714,7 @@ body.modal-open {
 
 .log-box {
     max-width: 600px !important;
-    display: flex;
-    flex-direction: column;
+    width: 90%;
 }
 
 .log-body {
@@ -732,11 +731,7 @@ body.modal-open {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     background: var(--search-bg);
-    font-family: 'Roboto Mono', monospace;
-}
-
-.log-item:last-child {
-    margin-bottom: 0;
+    transition: transform 0.2s ease;
 }
 
 .log-version {
@@ -744,6 +739,7 @@ body.modal-open {
     font-weight: 700;
     font-size: 1.2rem;
     margin-bottom: 4px;
+    font-family: 'Roboto Mono', monospace;
 }
 
 .log-date {
@@ -766,16 +762,10 @@ body.modal-open {
     margin-bottom: 8px;
 }
 
-.log-list li:last-child {
-    margin-bottom: 0;
+.log-body::-webkit-scrollbar {
+    width: 6px;
 }
 
-.log-body::-webkit-scrollbar {
-    width: 8px;
-}
-.log-body::-webkit-scrollbar-track {
-    background: var(--bg-color);
-}
 .log-body::-webkit-scrollbar-thumb {
     background: var(--search-border);
     border-radius: 10px;
