@@ -212,19 +212,23 @@ function closeViewer() {
 // --- ADMIN LOGIC ---
 
 async function openAdmin() {
-    closeUpdateLog(); 
-    const passcode = prompt("Enter AC-X Passcode:", localStorage.getItem('admin_passcode') || '');
+    let savedPass = localStorage.getItem('admin_passcode') || '';
+
+    const passcode = await requestAccessCode("AC-X (Administrative)", savedPass);
     
     if (!passcode) return;
-    const { data: isAdmin } = await _supabase.rpc('verify_admin', { passcode });
 
-    if (!isAdmin) {
-        alert("Invalid Credentials.");
+    const { data: isAdmin, error: rpcError } = await _supabase.rpc('verify_admin', { 
+        passcode: passcode.trim() 
+    });
+
+    if (rpcError || !isAdmin) {
+        alert("ACCESS DENIED: Invalid Administrative Credentials.");
         return;
     }
 
-    localStorage.setItem('admin_passcode', passcode);
-    window.adminKey = passcode;
+    localStorage.setItem('admin_passcode', passcode.trim());
+    window.adminKey = passcode.trim();
     
     const adminModal = document.getElementById('adminModal');
     if (adminModal) {
