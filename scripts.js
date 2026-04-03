@@ -340,6 +340,51 @@ function resetAdminForm() {
     }
 }
 
+// --- .LOG FILE LOADER ---
+// Note: This doesn't work via file:// and requires a server environment due to CORS restrictions.
+
+async function loadSystemLogs() {
+    const logContainer = document.getElementById('logBody');
+    try {
+        const response = await fetch('system.log');
+        if (!response.ok) throw new Error("Log file not found");
+        
+        const rawText = await response.text();
+        const lines = rawText.split('\n').filter(line => line.trim() !== '');
+        
+        let htmlContent = '';
+
+        lines.forEach(line => {
+            const ver = line.match(/VER:\s*([^|]+)/)?.[1]?.trim() || "---";
+            const date = line.match(/DATE:\s*([^|]+)/)?.[1]?.trim() || "---";
+            const data = line.match(/DATA:\s*([^|]+)/)?.[1]?.trim() || "";
+            const internal = line.match(/INTERNAL_ID:\s*([^|]+)/)?.[1]?.trim();
+
+            htmlContent += `
+                <div class="log-item">
+                    <div class="log-header-row">
+                        <span class="log-version">${ver}</span>
+                        <span class="log-date">${date}</span>
+                    </div>
+                    <div class="log-data-text">${data}</div>
+                    ${internal ? `<div class="log-internal-id">ID: ${internal}</div>` : ''}
+                </div>
+            `;
+        });
+
+        logContainer.innerHTML = htmlContent;
+    } catch (err) {
+        logContainer.innerHTML = `<div class="log-error">Failed to load logs: ${err.message}</div>`;
+    }
+}
+
+function openUpdateLog() {
+    document.getElementById('logModal').style.display = 'flex';
+    loadSystemLogs();
+    lockScroll();
+}
+
+
 // --- UI / EVENT LISTENERS ---
 
 function initTheme() {
