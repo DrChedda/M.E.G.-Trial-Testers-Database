@@ -712,61 +712,47 @@ body.modal-open {
 
 /* --- UPDATE LOG STYLES --- */
 
-.log-box {
-    max-width: 600px !important;
-    width: 90%;
-}
-
 .log-body {
+    padding: 20px;
     background-color: var(--bg-color); 
     max-height: 70dvh;
     overflow-y: auto;
-    padding: 20px;
-    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px; 
 }
 
-.log-item {
-    margin-bottom: 20px;
+.log-body > div {
     padding: 20px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     background: var(--search-bg);
-    transition: transform 0.2s ease;
+    box-sizing: border-box;
 }
 
-.log-version {
+.log-version, .error-title {
     color: var(--accent-purple);
     font-weight: 700;
     font-size: 1.2rem;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
     font-family: 'Roboto Mono', monospace;
 }
 
 .log-date {
     font-size: 0.9rem;
     color: var(--text-dim);
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     display: block;
 }
 
 .log-list {
     margin: 0;
     padding-left: 20px;
-    list-style-type: disc;
+    color: var(--text-main);
 }
 
 .log-list li {
-    color: var(--text-main);
     font-size: 0.95rem;
     line-height: 1.6;
-    margin-bottom: 8px;
-}
-
-.log-body::-webkit-scrollbar {
-    width: 6px;
-}
-
-.log-body::-webkit-scrollbar-thumb {
-    background: var(--search-border);
-    border-radius: 10px;
+    margin-bottom: 6px;
 }
