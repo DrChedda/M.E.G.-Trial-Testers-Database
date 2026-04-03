@@ -348,7 +348,7 @@ async function loadSystemLogs() {
     if (!logContainer) return;
 
     try {
-        const response = await fetch('system.log');
+        const response = await fetch('others/system.log');
         if (!response.ok) throw new Error("Log file not found");
         
         const rawText = await response.text();
